@@ -16,8 +16,12 @@ testNumber = () => {
     // const number = "20757504"; //II.2.ii.a
     // const number = "20159005" //II.2.ii.b
 
+    // const number = "12266420096203532444"; //IV.1
+    const number = "127285155221444"; //IV.2.i
+
     // const number = "120205690315959428539";
-    const number = "12267420096203532444";
+
+    // const number = "12267420096203532444"; important to test
 
     // const number = "2718281828459045235360";
 
@@ -56,37 +60,23 @@ testNumber = () => {
 
     //special number
     // const number = "14315926520897932384";
-    findThePalindromes(number);
+    // findThePalindromes(number);
     // findAllTypeOfNumbers();
 }
 
-findAllTypeOfNumbers = () => {
-    let allNumbers = {
-    }
+// findAllTypeOfNumbers = () => {
+//     let allNumbers = {
+//     }
 
-    let startN = 19000000;
-    let diff = 10000;
-
-    let multiplier = 88;
-    let finder = "II.2.ii.c";
-
-
-    let min = startN + diff * multiplier;
-    let max = min + diff;
-
-    console.log(min, max);
-
-
-    for (let i = min; i < max; i++) {
-        console.log("a");
-        let a = findThePalindromes(i.toString(10));
-        // console.log(a.typeUsed);
-        // if (a.algToUse == 1 && a.ajustmentUsed == "I.3") {
-        if (a.ajustmentUsed == finder) {
-            console.log(i);
-        }
-    }
-}
+//     let finder = "";
+//     let i = 200000000;
+//     while (finder != "IV.2.i") {
+//         console.log(i);
+//         let a = findThePalindromes(i.toString(10));
+//         finder = a.ajustmentUsed;
+//         i++;
+//     }
+// }
 
 findThePalindromes = (number) => {
 
@@ -99,7 +89,7 @@ findThePalindromes = (number) => {
         3: []
     };
 
-    const getNumberDigitByIndex = (index) => {
+    const getDigit = (index) => {
         const reverseNumber = number.split('').reverse();
         return parseInt(reverseNumber[index]);
     }
@@ -129,17 +119,17 @@ findThePalindromes = (number) => {
         p[pNumber][index - 1] = value;
     }
 
-    const definePx = (index, x) => {
+    const defineX = (index, x) => {
         if (!pxStartWithOne) {
             definePDigit(1, index, x);
         } else {
             definePDigit(1, index + 1, x);
         }
     }
-    const definePy = (index, y) => {
+    const defineY = (index, y) => {
         definePDigit(2, index, y);
     }
-    const definePz = (index, z) => {
+    const defineZ = (index, z) => {
         definePDigit(3, index, z);
     }
 
@@ -149,39 +139,39 @@ findThePalindromes = (number) => {
             p[1][0] = 1;
             p[1][p[1].length - 1] = 1;
         }
-        definePx(1, x1);
-        definePy(1, y1);
-        definePz(1, z1);
+        defineX(1, x1);
+        defineY(1, y1);
+        defineZ(1, z1);
     }
 
-    const definePxyz = (index, x, y, z) => {
-        definePx(index, x);
-        definePy(index, y);
-        definePz(index, z);
+    const defineXYZ = (index, x, y, z) => {
+        defineX(index, x);
+        defineY(index, y);
+        defineZ(index, z);
     }
 
-    const getPx = (index) => {
+    const getX = (index) => {
         if (!pxStartWithOne) {
             return p[1][index - 1];
         }
         return p[1][index];
     }
-    const getPy = (index) => {
+    const getY = (index) => {
         return p[2][index - 1];
     }
-    const getPz = (index) => {
+    const getZ = (index) => {
         return p[3][index - 1];
     }
-    const getPxyz = (index) => {
-        return { x: getPx(index), y: getPy(index), z: getPz(index) }
+    const getXYZ = (index) => {
+        return { x: getX(index), y: getY(index), z: getZ(index) }
     }
 
     const types = {
         A: {
             1: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
                 const Z1 = D(D0 - DLm1 - DLm2 + 1);
                 if (DLm2 > 2 && Z1) {
                     startPs();
@@ -191,9 +181,9 @@ findThePalindromes = (number) => {
                 return false;
             },
             2: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
                 if (DLm2 > 2 && !D(D0 - DLm1 - DLm2 + 1)) {
                     startPs();
                     defineFirstPDigits(DLm1, DLm2 - 2, 1);
@@ -202,11 +192,11 @@ findThePalindromes = (number) => {
                 return false;
             },
             3: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
                 const Z1 = D(D0 - DLm1 + 2);
-                if (DLm2 < 2 && DLm1 != 1 && Z1) {
+                if (DLm2 <= 2 && DLm1 != 1 && Z1) {
                     startPs();
                     defineFirstPDigits(DLm1 - 1, g - 1, Z1);
                     return true;
@@ -214,22 +204,21 @@ findThePalindromes = (number) => {
                 return false;
             },
             4: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const Z1 = D(D0 - DLm1 + 2);
-                if (DLm2 < 2 && DLm1 != 1 && !Z1) {
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                if (DLm2 <= 2 && DLm1 != 1 && !D(D0 - DLm1 + 2)) {
                     startPs();
-                    defineFirstPDigits(DLm1 - 1, g - 1, Z1);
+                    defineFirstPDigits(DLm1 - 1, g - 2, 1);
                     return true;
                 }
                 return false;
             },
             5: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 const Z1 = D(D0 - DLm3);
                 if (DLm1 == 1 && !DLm2 && DLm3 <= 3 && Z1) {
                     startPs('A');
@@ -239,10 +228,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             6: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && !DLm2 && DLm3 <= 2 && !D(D0 - DLm3)) {
                     startPs('A');
                     defineFirstPDigits(g - 1, DLm3 + 2, g - 1);
@@ -253,10 +242,10 @@ findThePalindromes = (number) => {
         },
         B: {
             1: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 const Z1 = D(D0 - DLm3);
                 if (DLm1 == 1 && DLm2 <= 2 && DLm3 >= 4 && Z1) {
                     startPs('B');
@@ -267,10 +256,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             2: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && DLm2 <= 2 && DLm3 >= 3 && !D(D0 - DLm3)) {
                     startPs('B');
                     pxStartWithOne = true;
@@ -280,10 +269,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             3: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && DLm2 > 0 && DLm2 <= 2 && DLm3 < 2 && !D0) {
                     startPs('B');
                     pxStartWithOne = true;
@@ -293,10 +282,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             4: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && DLm2 > 0 && DLm2 <= 2 && DLm3 > 1 && DLm3 <= 3 && !D0) {
                     startPs('B');
                     pxStartWithOne = true;
@@ -306,10 +295,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             5: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && DLm2 > 0 && DLm2 <= 2 && DLm3 <= 2 && D0) {
                     startPs('B');
                     pxStartWithOne = true;
@@ -319,10 +308,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             6: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 const Z1 = D(D0 - 3);
                 if (DLm1 == 1 && DLm2 > 0 && DLm2 <= 2 && DLm3 == 3 && Z1) {
                     startPs('B');
@@ -333,10 +322,10 @@ findThePalindromes = (number) => {
                 return false;
             },
             7: () => {
-                const D0 = getNumberDigitByIndex(0);
-                const DLm1 = getNumberDigitByIndex(l - 1);
-                const DLm2 = getNumberDigitByIndex(l - 2);
-                const DLm3 = getNumberDigitByIndex(l - 3);
+                const D0 = getDigit(0);
+                const DLm1 = getDigit(l - 1);
+                const DLm2 = getDigit(l - 2);
+                const DLm3 = getDigit(l - 3);
                 if (DLm1 == 1 && DLm2 > 0 && DLm2 <= 2 && DLm3 == 3 && D0 == 3) {
                     startPs('B');
                     pxStartWithOne = true;
@@ -351,7 +340,7 @@ findThePalindromes = (number) => {
     let typeUsed;
     const defineFirstDigits = () => {
         ['A', 'B'].forEach((letter) => {
-            for (let i = 1; i < Object.keys(types[letter]).length; i++) {
+            for (let i = 1; i <= Object.keys(types[letter]).length; i++) {
                 if (types[letter][i]()) {
                     typeUsed = `${letter}${i}`;
                     setAlgToUse(letter, i);
@@ -364,7 +353,7 @@ findThePalindromes = (number) => {
     let algToUse;
     const setAlgToUse = (letter, type) => {
 
-        const special = l == 2 * m && (!getNumberDigitByIndex(m - 1) || !getNumberDigitByIndex(m));
+        const special = l == 2 * m && (!getDigit(m - 1) || !getDigit(m));
 
         if (!special) {
             //Alg I and II use A sooo
@@ -376,7 +365,7 @@ findThePalindromes = (number) => {
                 }
 
                 //use alg II when
-                if (((type <= 4 && l == 2 * m) || l == 2 * m + 1) && getNumberDigitByIndex(m - 1) && getNumberDigitByIndex(m)) {
+                if (((type <= 4 && l == 2 * m) || l == 2 * m + 1) && getDigit(m - 1) && getDigit(m)) {
                     algToUse = 2;
                     return;
                 }
@@ -388,7 +377,7 @@ findThePalindromes = (number) => {
                 }
 
                 //use alg IV when
-                if (l == 2 * m && getNumberDigitByIndex(m - 1) && getNumberDigitByIndex(m)) {
+                if (l == 2 * m && getDigit(m - 1) && getDigit(m)) {
                     algToUse = 4;
                     return;
                 }
@@ -404,176 +393,178 @@ findThePalindromes = (number) => {
     let ajustmentUsed;
     const runAlg = () => {
         if (algToUse == 1) {
-            const { x: x1, y: y1, z: z1 } = getPxyz(1);
+            const { x: x1, y: y1, z: z1 } = getXYZ(1);
 
             c[1] = Math.floor((x1 + y1 + z1) / g);
 
             let x2;
-            if (z1 <= getNumberDigitByIndex(2 * m - 2) - 1) {
-                x2 = D(getNumberDigitByIndex(2 * m - 1) - y1);
+            if (z1 <= getDigit(2 * m - 2) - 1) {
+                x2 = D(getDigit(2 * m - 1) - y1);
             }
-            if (z1 >= getNumberDigitByIndex(2 * m - 2)) {
-                x2 = D(getNumberDigitByIndex(2 * m - 1) - y1 - 1);
+            if (z1 >= getDigit(2 * m - 2)) {
+                x2 = D(getDigit(2 * m - 1) - y1 - 1);
             }
-            const y2 = D(getNumberDigitByIndex(2 * m - 2) - z1 - 1);
-            const z2 = D(getNumberDigitByIndex(1) - x2 - y2 - c[1]);
-            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getNumberDigitByIndex(1)) / g);
+            const y2 = D(getDigit(2 * m - 2) - z1 - 1);
+            const z2 = D(getDigit(1) - x2 - y2 - c[1]);
+            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            definePxyz(2, x2, y2, z2);
+            defineXYZ(2, x2, y2, z2);
 
             for (let i = 3; i <= m; i++) {
 
-                const { z: zim1 } = getPxyz(i - 1);
-                if (zim1 <= getNumberDigitByIndex(2 * m - i) - 1) {
+                const zim1 = getZ(i - 1);
+                if (zim1 <= getDigit(2 * m - i) - 1) {
                     xi = 1;
                 }
-                if (zim1 >= getNumberDigitByIndex(2 * m - i)) {
+                if (zim1 >= getDigit(2 * m - i)) {
                     xi = 0;
                 }
 
-                yi = D(getNumberDigitByIndex(2 * m - i) - zim1 - 1);
-                zi = D(getNumberDigitByIndex(i - 1) - xi - yi - c[i - 1]);
+                const yi = D(getDigit(2 * m - i) - zim1 - 1);
+                const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
                 c[i] = Math.floor((xi + yi + zi + c[i - 1]) / g);
 
-                definePxyz(i, xi, yi, zi);
+                defineXYZ(i, xi, yi, zi);
             }
 
-            definePx(m + 1, 0);
+            defineX(m + 1, 0);
 
 
             if (c[m] == 1) {
                 ajustmentUsed = "I.1";
+                return;
             }
 
             if (!c[m]) {
                 ajustmentUsed = "I.2";
-                definePx(m + 1, 1);
+                defineX(m + 1, 1);
                 return;
             }
 
             if (c[m] == 2) {
                 ajustmentUsed = "I.3";
-                definePx(m + 1, 1);
-                definePy(m, getPy(m) - 1);
-                definePz(m, 0);
+                defineX(m + 1, 1);
+                defineY(m, getY(m) - 1);
+                defineZ(m, 0);
             }
 
         } else if (algToUse == 2) {
-            const { x: x1, y: y1, z: z1 } = getPxyz(1);
+            const { x: x1, y: y1, z: z1 } = getXYZ(1);
             c[1] = Math.floor((x1 + y1 + z1) / g);
 
             let x2;
-            if (z1 <= getNumberDigitByIndex(2 * m - 3) - 1) {
-                x2 = D(getNumberDigitByIndex(2 * m - 2) - y1);
+            if (z1 <= getDigit(2 * m - 3) - 1) {
+                x2 = D(getDigit(2 * m - 2) - y1);
             }
-            if (z1 >= getNumberDigitByIndex(2 * m - 3)) {
-                x2 = D(getNumberDigitByIndex(2 * m - 2) - y1 - 1);
+            if (z1 >= getDigit(2 * m - 3)) {
+                x2 = D(getDigit(2 * m - 2) - y1 - 1);
             }
-            const y2 = D(getNumberDigitByIndex(2 * m - 3) - z1 - 1);
-            const z2 = D(getNumberDigitByIndex(1) - x2 - y2 - c[1]);
+            const y2 = D(getDigit(2 * m - 3) - z1 - 1);
+            const z2 = D(getDigit(1) - x2 - y2 - c[1]);
 
-            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getNumberDigitByIndex(1)) / g);
+            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            definePxyz(2, x2, y2, z2);
+            defineXYZ(2, x2, y2, z2);
 
             for (let i = 3; i < m; i++) {
 
-                const { z: zim1 } = getPxyz(i - 1);
-                if (zim1 <= getNumberDigitByIndex(2 * m - i - 1) - 1) {
+                const zim1 = getZ(i - 1);
+                if (zim1 <= getDigit(2 * m - i - 1) - 1) {
                     xi = 1;
                 }
-                if (zim1 >= getNumberDigitByIndex(2 * m - i - 1)) {
+                if (zim1 >= getDigit(2 * m - i - 1)) {
                     xi = 0;
                 }
 
-                yi = D(getNumberDigitByIndex(2 * m - i - 1) - zim1 - 1);
-                zi = D(getNumberDigitByIndex(i - 1) - xi - yi - c[i - 1]);
-                c[i] = Math.floor((xi + yi + zi + c[i - 1] - getNumberDigitByIndex(i - 1)) / g);
+                const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
+                const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
+                c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
 
-                definePxyz(i, xi, yi, zi);
+                defineXYZ(i, xi, yi, zi);
             }
 
-            definePx(m, 0);
-            definePy(m, D(getNumberDigitByIndex(m - 1) - getPz(m - 1) - c[m - 1]));
+            defineX(m, 0);
+            defineY(m, D(getDigit(m - 1) - getZ(m - 1) - c[m - 1]));
 
             if (c[m] == 1) {
                 ajustmentUsed = "II.1";
             }
 
             if (!c[m]) {
-                if (getPy(m)) {
+                if (getY(m)) {
                     ajustmentUsed = "II.2.i";
-                    definePx(m, 1);
-                    definePy(m, getPy(m) - 1);
+                    defineX(m, 1);
+                    defineY(m, getY(m) - 1);
                 } else {
-                    if (getPy(m - 1)) {
+                    if (getY(m - 1)) {
                         ajustmentUsed = "II.2.ii.a";
-                        definePx(m, 1);
-                        definePy(m, g - 2);
-                        definePy(m - 1, getPy(m - 1) - 1);
-                        definePz(m, getPz(m - 1) + 1);
-                    } else if (getPz(m - 1)) {
+                        defineX(m, 1);
+                        defineY(m, g - 2);
+                        defineY(m - 1, getY(m - 1) - 1);
+                        defineZ(m, getZ(m - 1) + 1);
+                    } else if (!getY(m - 1) && getZ(m - 1)) {
                         ajustmentUsed = "II.2.ii.b";
-                        definePy(m, 1);
-                        definePy(m - 1, 1);
-                        definePz(m, getPz(m) - 1);
-                    } else {
+                        defineY(m, 1);
+                        defineY(m - 1, 1);
+                        defineZ(m, getZ(m) - 1);
+                    } else if (!getY(m - 1) && !getZ(m - 1)) {
                         ajustmentUsed = "II.2.ii.c";
-                        definePx(m, 1);
-                        definePx(m - 1, getPx(m - 1) - 1);
-                        definePy(m, g - 4);
-                        definePy(m - 1, g - 1);
-                        definePz(m + 2, 0);
-                        definePz(m, 2);
+                        defineX(m, 1);
+                        defineX(m - 1, getX(m - 1) - 1);
+                        defineY(m, g - 4);
+                        defineY(m - 1, g - 1);
+                        defineZ(m + 2, 0);
+                        defineZ(m, 2);
                     }
                 }
             }
 
             //Unnecessary Case ?!
-            // if (c[m] == 2) {
-            //     ajustmentUsed = "II.3";
-            //     definePx(m , 1);
-            //     definePy(m, g - 2);
-            //     definePy(m - 1, getPy(m - 1) - 1);
-            //     definePz(0);
-            // }
+            if (c[m] == 2) {
+                ajustmentUsed = "II.3";
+                defineX(m, 1);
+                defineY(m, g - 2);
+                defineY(m - 1, getY(m - 1) - 1);
+                defineZ(0);
+            }
+
         } else if (algToUse == 3) {
-            const { x: x1, y: y1, z: z1 } = getPxyz(1);
+            const { x: x1, y: y1, z: z1 } = getXYZ(1);
             c[1] = Math.floor((1 + y1 + z1) / g);
 
             let x2;
-            if (z1 <= getNumberDigitByIndex(2 * m - 3) - 1) {
-                x2 = D(getNumberDigitByIndex(2 * m - 2) - y1);
+            if (z1 <= getDigit(2 * m - 3) - 1) {
+                x2 = D(getDigit(2 * m - 2) - y1);
             }
-            if (z1 >= getNumberDigitByIndex(2 * m - 3)) {
-                x2 = D(getNumberDigitByIndex(2 * m - 2) - y1 - 1);
+            if (z1 >= getDigit(2 * m - 3)) {
+                x2 = D(getDigit(2 * m - 2) - y1 - 1);
             }
-            const y2 = D(getNumberDigitByIndex(2 * m - 3) - z1 - 1);
-            const z2 = D(getNumberDigitByIndex(1) - x1 - y2 - c[1]);
-            c[2] = Math.floor((x1 + y2 + z2 + c[1] - getNumberDigitByIndex(1)) / g);
+            const y2 = D(getDigit(2 * m - 3) - z1 - 1);
+            const z2 = D(getDigit(1) - x1 - y2 - c[1]);
+            c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            definePxyz(2, x2, y2, z2, true);
+            defineXYZ(2, x2, y2, z2, true);
 
             for (let i = 3; i < m; i++) {
 
-                const { z: zim1 } = getPxyz(i - 1);
+                const zim1 = getZ(i - 1);
 
                 let xi;
-                if (zim1 <= getNumberDigitByIndex(2 * m - i - 1) - 1) {
+                if (zim1 <= getDigit(2 * m - i - 1) - 1) {
                     xi = 1;
                 }
-                if (zim1 >= getNumberDigitByIndex(2 * m - i - 1)) {
+                if (zim1 >= getDigit(2 * m - i - 1)) {
                     xi = 0;
                 }
-                yi = D(getNumberDigitByIndex(2 * m - i - 1) - zim1 - 1);
-                zi = D(getNumberDigitByIndex(i - 1) - getPx(i - 1) - yi - c[i - 1]);
-                c[i] = Math.floor((getPx(i - 1) + yi + zi + c[i - 1] - getNumberDigitByIndex(i - 1)) / g);
+                const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
+                const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
+                c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
 
-                definePxyz(i, xi, yi, zi);
+                defineXYZ(i, xi, yi, zi);
             }
 
-            definePx(m, 0, true);
-            definePy(m, D(getNumberDigitByIndex(m - 1) - getPz(m - 1) - getPx(m - 1) - c[m - 1]));
+            defineX(m, 0, true);
+            defineY(m, D(getDigit(m - 1) - getZ(m - 1) - getX(m - 1) - c[m - 1]));
 
             if (c[m] == 1) {
                 ajustmentUsed = "III.1";
@@ -581,40 +572,180 @@ findThePalindromes = (number) => {
 
             if (!c[m]) {
                 ajustmentUsed = "III.2";
-                definePx(m + 1, 1)
+                defineX(m + 1, 1)
             }
 
             if (c[m] == 2) {
-                if (getPy(m - 1)) {
-                    if (getPz(m - 1) != g - 1) {
-                        ajustmentUsed = "III.3.i";
-                        definePy(m, getPy(m) - 1);
-                        definePy(m - 1, getPy(m - 1) - 1);
-                        definePz(m, getPz(m) + 1);
-                    } else {
-                        ajustmentUsed = "III.3.ii";
-                        definePx(m + 1, 1);
-                        definePy(m - 1, getPy(m - 1) - 1);
-                        definePz(m, 0);
-                    }
-                } else {
-                    if (getPz(m - 1) != g - 1) {
-                        ajustmentUsed = "III.3.iii";
-                        definePx(m, getPx(m) - 1);
-                        definePy(m, getPy(m) - 1);
-                        definePy(m - 1, g - 1);
-                        definePz(m, getPz(m) + 1);
-                    } else {
-                        ajustmentUsed = "III.3.iv";
-                        definePx(m + 1, 1);
-                        definePx(m, getPx(m) - 1);
-                        definePy(m - 1, g - 1);
-                        definePz(m, 0);
-                    }
+                if (getY(m - 1) && getZ(m - 1) != g - 1) {
+                    ajustmentUsed = "III.3.i";
+                    defineY(m, getY(m) - 1);
+                    defineY(m - 1, getY(m - 1) - 1);
+                    defineZ(m, getZ(m) + 1);
+                } else if (getY(m - 1) && getZ(m - 1) == g - 1) {
+                    ajustmentUsed = "III.3.ii";
+                    defineX(m + 1, 1);
+                    defineY(m - 1, getY(m - 1) - 1);
+                    defineZ(m, 0);
+                } else if (!getY(m - 1) && getZ(m - 1) != g - 1) {
+                    ajustmentUsed = "III.3.iii";
+                    defineX(m, getX(m) - 1);
+                    defineY(m, getY(m) - 1);
+                    defineY(m - 1, g - 1);
+                    defineZ(m, getZ(m) + 1);
+                } else if (!getY(m - 1) && getZ(m - 1) == g - 1) {
+                    ajustmentUsed = "III.3.iv";
+                    defineX(m + 1, 1);
+                    defineX(m, getX(m) - 1);
+                    defineY(m - 1, g - 1);
+                    defineZ(m, 0);
                 }
             }
         } else if (algToUse == 4) {
-            
+            const { x: x1, y: y1, z: z1 } = getXYZ(1);
+
+            c[1] = Math.floor((1 + y1 + z1) / g);
+            let x2;
+            if (z1 <= getDigit(2 * m - 4) - 1) {
+                x2 = D(getDigit(2 * m - 3) - y1);
+            }
+            if (z1 >= getDigit(2 * m - 4)) {
+                x2 = D(getDigit(2 * m - 3) - y1 - 1);
+            }
+            const y2 = D(getDigit(2 * m - 4) - z1 - 1);
+            const z2 = D(getDigit(1) - x1 - y2 - c[1]);
+            c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+
+            defineXYZ(2, x2, y2, z2);
+
+            for (let i = 3; i <= m - 2; i++) {
+                const zim1 = getZ(i - 1);
+                let xi;
+                if (zim1 <= getDigit(2 * m - i - 2) - 1) {
+                    xi = 1;
+                }
+                if (zim1 >= getDigit(2 * m - i - 2)) {
+                    xi = 0;
+                }
+                const yi = D(getDigit(2 * m - i - 2) - zim1 - 1);
+                const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
+                c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+
+                defineXYZ(i, xi, yi, zi);
+            }
+
+            if (getZ(m - 2) <= getDigit(m - 1) - 1) {
+                defineX(m - 1, 1);
+            }
+
+            if (getZ(m - 2) >= getDigit(m - 1)) {
+                defineX(m - 1, 0);
+            }
+
+            defineY(m - 1, D(getDigit(m - 1) - getZ(m - 2) - 1));
+            defineZ(m - 1, D(getDigit(m - 2) - getX(m - 2) - getY(m - 1) - c[m - 2]));
+
+            c[m - 1] = Math.floor((getX(m - 2) + getY(m - 1) + getZ(m - 1) + c[m - 2] - getDigit(m - 2)) / g);
+
+            if ((getX(m - 1) + c[m - 1]) == 1) {
+                ajustmentUsed = "IV.1";
+            } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) != g - 1) {
+                if (getZ(m - 1)) {
+                    ajustmentUsed = "IV.2.i";
+                    defineY(m - 1, getY(m - 1) + 1);
+                    defineZ(m - 1, getY(m - 1) - 1);
+                } else if (!getZ(m - 1) && getY(m - 2)) {
+                    if (getY(m - 1) != 1 && getZ(m - 2) != g - 1) {
+                        ajustmentUsed = "IV.2.ii.a";
+                        defineX(m, 1);
+                        defineY(m - 1, getY(m - 1) - 1);
+                        defineY(m - 2, getY(m - 2) - 1);
+                        defineZ(m, getZ(m) + 1);
+                        defineZ(m - 1, 1);
+                    } else if (getY(m - 1) != 1 && getZ(m - 2) == g - 1) {
+                        ajustmentUsed = "IV.2.ii.b";
+                        defineX(m, 2);
+                        defineY(m - 1, getY(m - 1) - 2);
+                        defineY(m - 2, getY(m - 2) - 1);
+                        defineZ(m, 0);
+                        defineZ(m - 1, 3);
+                    } else if (getY(m - 1) == 1) {
+                        ajustmentUsed = "IV.2.ii.c";
+                        defineX(m, 1);
+                        defineY(m - 1, g - 1);
+                        defineY(m - 2, getY(m - 2) - 1);
+                        defineZ(m, 0);
+                        defineZ(m - 1, 3);
+                    }
+                } else if (!getZ(m - 1) && !getY(m - 2)) {
+                    if (getZ(m - 2) != g - 1) {
+                        ajustmentUsed = "IV.2.iii.a";
+                        defineX(m, 1);
+                        defineX(m + 1, getX(m + 1) - 1);
+                        defineY(m, getY(m) - 1);
+                        defineY(m + 1, getY(m + 1), g - 1);
+                        defineZ(m - 1, 1);
+                        defineZ(m, getZ(m - 2) + 1);
+                    } else if (getZ(m - 2) = g - 1 && getY(m - 1) != 1) {
+                        ajustmentUsed = "IV.2.iii.b";
+                    } else if (getZ(m - 2) = g - 1 && getY(m - 1) == 1) {
+                        ajustmentUsed = "IV.2.iii.c";
+                    }
+                }
+            } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) == g - 1) {
+                ajustmentUsed = "IV.3";
+            } else if (getX(m - 1) + c[m - 1] == 2 && !getX(m - 1) && c[m - 1] == 2) {
+                if (getZ(m - 1) != g - 1) {
+                    ajustmentUsed = "IV.4.i";
+                } else if (getZ(m - 1) == g - 1 && getZ(m - 2) != g - 1) {
+                    if (getY(m - 2)) {
+                        ajustmentUsed = "IV.4.ii.a";
+                    } else if (!getY(m - 2)) {
+                        ajustmentUsed = "IV.4.ii.b";
+                    }
+                } else if (getZ(m - 1) == g - 1 && getZ(m - 2) == g - 1) {
+                    if (getY(m - 1) != g - 1 && getY(m - 1) != g - 2) {
+                        ajustmentUsed = "IV.4.iii.a";
+                    } else if (getY(m - 1) == g - 1 || getY(m - 1) && g - 2) {
+                        ajustmentUsed = "IV.4.iii.b";
+                    }
+                }
+            } else if (getX(m - 1) + c[m - 1] == 2 && getX(m - 1) == 1 && c[m - 1] == 1) {
+                if (getZ(m - 1) != g - 1 && getY(m - 1)) {
+                    ajustmentUsed = "IV.5.i";
+                } else if (getZ(m - 1) != g - 1 && !getY(m - 1)) {
+                    ajustmentUsed = "IV.5.ii";
+                } else if (getZ(m - 1) == g - 1 && getZ(m - 2)) {
+                    if (getY(m - 2) != g - 1) {
+                        ajustmentUsed = "IV.5.iii.a";
+                    } else if (getY(m - 2) == g - 1 && getY(m - 1) > 1) {
+                        ajustmentUsed = "IV.5.iii.b";
+                    } else if (getY(m - 2) == g - 1 && !getY(m - 1)) {
+                        ajustmentUsed = "IV.5.iii.c";
+                    } else if (getY(m - 2) == g - 1 && getY(m - 1) == 1) {
+                        ajustmentUsed = "IV.5.iii.d";
+                    }
+                } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && getY(m - 2)) {
+                    if (getY(m - 1) > 1) {
+                        ajustmentUsed = "IV.5.iv.a";
+                    } else if (!getY(m - 1)) {
+                        ajustmentUsed = "IV.5.iv.b";
+                    } else if (getY(m - 1) == 1) {
+                        ajustmentUsed = "IV.5.iv.c";
+                    }
+                } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && !getY(m - 2)) {
+                    if (getY(m - 1) > 1) {
+                        ajustmentUsed = "IV.5.v.a";
+                    } else if (!getY(m - 1)) {
+                        ajustmentUsed = "IV.5.v.b";
+                    } else if (getY(m - 1) == 1) {
+                        ajustmentUsed = "IV.5.v.c";
+                    }
+                }
+            } else if (getX(m - 1) + c[m - 1] == 3) {
+                ajustmentUsed = "IV.6";
+            }
+        } else if (algToUse == 5) {
+            ajustmentUsed = "-";
         }
     }
 
@@ -635,43 +766,27 @@ findThePalindromes = (number) => {
         pPreRender(2);
         pPreRender(3);
 
-        let print = "%c";
+        const render = (arr) => {
+            let print = '%c';
+            for (let i = 0; i < arr.length; i++) {
+                let pc = "";
+                let y = algToUse == 4 ? m + 1 : m;
+                if ((i == y && !(l / 2 % 2)) || (i == y + 1 && l / 2 % 2)) {
+                    pc = '%c';
+                }
 
-        for (let i = 0; i < number.split('').length; i++) {
-            let pc = "";
-            if ((i == m && !(l / 2 % 2)) || (i == m + 1 && l / 2 % 2)) {
-                pc = '%c';
+                print += `${pc} ${arr[i]} `;
             }
-            print += `${pc} ${number.split('')[i]} `;
+            return print + '\n';
         }
 
-        print += "\n%c"
+        let print = "";
 
-        for (let i = 0; i < p[1].length; i++) {
-            let pc = "";
-            if ((i == m && !(l / 2 % 2)) || (i == m + 1 && l / 2 % 2)) {
-                pc = '%c';
-            }
-            print += `${pc} ${p[1][i]} `;
-        }
-        print += "\n%c"
+        print += render(number.split(''));
+        print += render(p[1]);
+        print += render(p[2]);
+        print += render(p[3]);
 
-        for (let i = 0; i < p[2].length; i++) {
-            let pc = "";
-            if ((i == m && !(l / 2 % 2)) || (i == m + 1 && l / 2 % 2)) {
-                pc = '%c';
-            }
-            print += `${pc} ${p[2][i]} `;
-        }
-        print += "\n%c"
-
-        for (let i = 0; i < p[3].length; i++) {
-            let pc = "";
-            if ((i == m && !(l / 2 % 2)) || (i == m + 1 && l / 2 % 2)) {
-                pc = '%c';
-            }
-            print += `${pc} ${p[3][i]} `;
-        }
 
         const style = [
             'background: #000',
@@ -704,7 +819,7 @@ findThePalindromes = (number) => {
         );
     }
 
-    debug();
+    // debug();
 
     return {
         typeUsed,
