@@ -81,7 +81,7 @@ testNumber = () => {
 findThePalindromes = (number) => {
 
     const l = number.length;
-    const g = 10;
+    let g = 10;
     const m = Math.floor(l / 2);
     const p = {
         1: [],
@@ -685,9 +685,9 @@ findThePalindromes = (number) => {
                         defineY(m + 1, getY(m + 1), g - 1);
                         defineZ(m - 1, 1);
                         defineZ(m, getZ(m - 2) + 1);
-                    } else if (getZ(m - 2) = g - 1 && getY(m - 1) != 1) {
+                    } else if (getZ(m - 2) == g - 1 && getY(m - 1) != 1) {
                         ajustmentUsed = "IV.2.iii.b";
-                    } else if (getZ(m - 2) = g - 1 && getY(m - 1) == 1) {
+                    } else if (getZ(m - 2) == g - 1 && getY(m - 1) == 1) {
                         ajustmentUsed = "IV.2.iii.c";
                     }
                 }
@@ -745,7 +745,85 @@ findThePalindromes = (number) => {
                 ajustmentUsed = "IV.6";
             }
         } else if (algToUse == 5) {
-            ajustmentUsed = "-";
+            const s = Math.pow(g, m) + Math.pow(g, m - 1);
+            const ni = parseInt(number) - s;
+
+            const subString = (n1, n2) => {
+                let carrier = 0;
+                let bigN;
+                let smallN;
+                let result = [];
+                let number1 = n1.split('');
+                let number2 = n2.split('');
+
+                number1.reverse();
+                number2.reverse();
+
+                if (number1.length > number2.length) {
+                    for (let i = 0; i < n1.length - n2.length; i++) {
+                        number2.push('0');
+                    }
+                }
+
+                if (number1.length < number2.length) {
+                    for (let i = 0; i < n2.length - n1.length; i++) {
+                        number1.push('0');
+                    }
+                }
+
+
+                for (let i = 0; i < number1.length; i++) {
+                    number1[i] = parseInt(number1[i], g);
+                    number2[i] = parseInt(number2[i], g);
+                }
+
+                bigN = number1;
+                smallN = number2;
+
+                number1.reverse();
+                number2.reverse();
+
+                for (let i = 0; i < number1.length; i++) {
+                    const n1 = parseInt(number1[i]);
+                    const n2 = parseInt(number2[i]);
+                    if (n1 > n2) break;
+                    if (n1 < n2) {
+                        bigN = number2;
+                        smallN = number1;
+                        break;
+                    }
+                }
+
+                number1.reverse();
+                number2.reverse();
+
+                for (let i = 0; i < bigN.length; i++) {
+                    let r = smallN[i] ? bigN[i] - smallN[i] - carrier : bigN[i] - carrier;
+
+                    if (r < 0) {
+                        r = ((r % g) + g) % g;
+                        carrier = 1;
+                    } else {
+                        carrier = 0;
+                    }
+
+                    result.push(r.toString(g));
+                }
+
+                result.reverse();
+                while (result.length > 1 && result[0] == '0') {
+                    result.shift();
+                }
+
+                return result.join('');
+
+            }
+
+            console.log(subString("20", "5000"));
+            // console.log(subString("123456789999999445152461267265272524451945924", "100000000000000000000000000000000000000000000"))
+            // console.log(subString("7014986288754326472", "5261428345497037521"));
+            // console.log(subString("5261428345497037521", "7014986288754326472"));
+            // console.log(subString("100000000012", "100000000014"));
         }
     }
 
