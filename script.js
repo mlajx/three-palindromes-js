@@ -9,10 +9,10 @@
  *  III.3.iv
  */
 
- /***
-  * important commands
-  * grep ' ajustmentUsed ' result.txt | tail
-  */
+/***
+ * important commands
+ * grep ' ajustmentUsed ' result.txt | tail
+ */
 findThePalindromes = (number, _debug = false) => {
 
     const l = number.length;
@@ -32,6 +32,134 @@ findThePalindromes = (number, _debug = false) => {
     const D = (n) => {
         // correct module
         return ((n % g) + g) % g;
+    }
+
+    const calcStr = {
+        pow: (n1, n2) => {
+            let n1s = n1.toString();
+            let result = n1s;
+            for (let i = 1; i < n2; i++) {
+                result = calcStr.mult(result, n1s);
+            }
+            return result;
+        },
+        mult: (n1, n2) => {
+            let result = "0";
+            let loop = n2;
+            while (loop != '0') {
+                loop = calcStr.sub(loop, "1");
+                result = calcStr.add(result, n1);
+            }
+            return result;
+        },
+        add: (n1, n2) => {
+
+            let carrier = 0;
+            let number1 = n1.split('').reverse();
+            let number2 = n2.split('').reverse();
+            let result = [];
+
+            if (number1.length > number2.length) {
+                for (let i = 0; i < n1.length - n2.length; i++) {
+                    number2.push('0');
+                }
+            }
+
+            if (number1.length < number2.length) {
+                for (let i = 0; i < n2.length - n1.length; i++) {
+                    number1.push('0');
+                }
+            }
+            
+            for (let i = 0; i < number1.length; i++) {
+                number1[i] = parseInt(number1[i], g);
+                number2[i] = parseInt(number2[i], g);
+            }
+
+            for (let i = 0; i < number1.length; i++) {
+                let r = number1[i] + number2[i] + carrier;
+                if (r >= g) {
+                    r -= g
+                    carrier = 1;
+                } else {
+                    carrier = 0;
+                }
+
+                result.push(r.toString(g));
+            }
+
+            if (carrier) {
+                result.push(1);
+            }
+
+            return result.reverse().join('');
+        },
+        sub: (n1, n2) => {
+            let carrier = 0;
+            let bigN;
+            let smallN;
+            let result = [];
+            let number1 = n1.split('').reverse();
+            let number2 = n2.split('').reverse();
+
+            if (number1.length > number2.length) {
+                for (let i = 0; i < n1.length - n2.length; i++) {
+                    number2.push('0');
+                }
+            }
+
+            if (number1.length < number2.length) {
+                for (let i = 0; i < n2.length - n1.length; i++) {
+                    number1.push('0');
+                }
+            }
+
+            for (let i = 0; i < number1.length; i++) {
+                number1[i] = parseInt(number1[i], g);
+                number2[i] = parseInt(number2[i], g);
+            }
+
+            bigN = number1;
+            smallN = number2;
+
+            number1.reverse();
+            number2.reverse();
+
+            for (let i = 0; i < number1.length; i++) {
+                const n1 = parseInt(number1[i]);
+                const n2 = parseInt(number2[i]);
+                if (n1 > n2) break;
+                if (n1 < n2) {
+                    bigN = number2;
+                    smallN = number1;
+                    break;
+                }
+            }
+
+            number1.reverse();
+            number2.reverse();
+
+            for (let i = 0; i < bigN.length; i++) {
+                let r = bigN[i] - smallN[i] - carrier;
+
+                if (r < 0) {
+                    r = ((r % g) + g) % g;
+                    carrier = 1;
+                } else {
+                    carrier = 0;
+                }
+
+                result.push(r.toString(g));
+            }
+
+            result.reverse();
+            while (result.length > 1 && result[0] == '0') {
+                result.shift();
+            }
+
+            return result.join('');
+
+        }
     }
 
     const startPs = (type = false) => {
@@ -327,510 +455,398 @@ findThePalindromes = (number, _debug = false) => {
     let c = {};
     let ajustmentUsed;
     const runAlg = () => {
-        if (algToUse == 1) {
-            const { x: x1, y: y1, z: z1 } = getXYZ(1);
 
-            c[1] = Math.floor((x1 + y1 + z1) / g);
+        const algs = {
+            1: () => {
+                const { x: x1, y: y1, z: z1 } = getXYZ(1);
 
-            let x2;
-            if (z1 <= getDigit(2 * m - 2) - 1) {
-                x2 = D(getDigit(2 * m - 1) - y1);
-            }
-            if (z1 >= getDigit(2 * m - 2)) {
-                x2 = D(getDigit(2 * m - 1) - y1 - 1);
-            }
-            const y2 = D(getDigit(2 * m - 2) - z1 - 1);
-            const z2 = D(getDigit(1) - x2 - y2 - c[1]);
-            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
+                c[1] = Math.floor((x1 + y1 + z1) / g);
 
-            defineXYZ(2, x2, y2, z2);
+                const x2 = z1 <= getDigit(2 * m - 2) - 1 ? D(getDigit(2 * m - 1) - y1) : D(getDigit(2 * m - 1) - y1 - 1);
+                const y2 = D(getDigit(2 * m - 2) - z1 - 1);
+                const z2 = D(getDigit(1) - x2 - y2 - c[1]);
+                c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            for (let i = 3; i <= m; i++) {
+                defineXYZ(2, x2, y2, z2);
 
-                const zim1 = getZ(i - 1);
-                if (zim1 <= getDigit(2 * m - i) - 1) {
-                    xi = 1;
-                }
-                if (zim1 >= getDigit(2 * m - i)) {
-                    xi = 0;
+                for (let i = 3; i <= m; i++) {
+                    const zim1 = getZ(i - 1);
+                    const xi = zim1 <= getDigit(2 * m - i) - 1 ? 1 : 0;
+                    const yi = D(getDigit(2 * m - i) - zim1 - 1);
+                    const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
+                    c[i] = Math.floor((xi + yi + zi + c[i - 1]) / g);
+                    defineXYZ(i, xi, yi, zi);
                 }
 
-                const yi = D(getDigit(2 * m - i) - zim1 - 1);
-                const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
-                c[i] = Math.floor((xi + yi + zi + c[i - 1]) / g);
+                defineX(m + 1, 0);
 
-                defineXYZ(i, xi, yi, zi);
-            }
-
-            defineX(m + 1, 0);
-
-            if (c[m] == 1) {
-                ajustmentUsed = "I.1";
-                return;
-            }
-
-            if (!c[m]) {
-                ajustmentUsed = "I.2";
-                defineX(m + 1, 1);
-                return;
-            }
-
-            if (c[m] == 2) {
-                ajustmentUsed = "I.3";
-                defineX(m + 1, 1);
-                defineY(m, getY(m) - 1);
-                defineZ(m, 0);
-            }
-
-        } else if (algToUse == 2) {
-            const { x: x1, y: y1, z: z1 } = getXYZ(1);
-            c[1] = Math.floor((x1 + y1 + z1) / g);
-
-            let x2;
-            if (z1 <= getDigit(2 * m - 3) - 1) {
-                x2 = D(getDigit(2 * m - 2) - y1);
-            }
-            if (z1 >= getDigit(2 * m - 3)) {
-                x2 = D(getDigit(2 * m - 2) - y1 - 1);
-            }
-            const y2 = D(getDigit(2 * m - 3) - z1 - 1);
-            const z2 = D(getDigit(1) - x2 - y2 - c[1]);
-
-            c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
-
-            defineXYZ(2, x2, y2, z2);
-
-            for (let i = 3; i < m; i++) {
-
-                const zim1 = getZ(i - 1);
-                if (zim1 <= getDigit(2 * m - i - 1) - 1) {
-                    xi = 1;
-                }
-                if (zim1 >= getDigit(2 * m - i - 1)) {
-                    xi = 0;
+                if (c[m] == 1) {
+                    ajustmentUsed = "I.1";
                 }
 
-                const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
-                const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
-                c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                if (!c[m]) {
+                    ajustmentUsed = "I.2";
+                    defineX(m + 1, 1);
+                }
 
-                defineXYZ(i, xi, yi, zi);
-            }
-
-            defineX(m, 0);
-            defineY(m, D(getDigit(m - 1) - getZ(m - 1) - c[m - 1]));
-
-            if (c[m] == 1) {
-                ajustmentUsed = "II.1";
-            }
-
-            if (!c[m]) {
-                if (getY(m)) {
-                    ajustmentUsed = "II.2.i";
-                    defineX(m, 1);
+                if (c[m] == 2) {
+                    ajustmentUsed = "I.3";
+                    defineX(m + 1, 1);
                     defineY(m, getY(m) - 1);
-                } else {
-                    if (getY(m - 1)) {
-                        ajustmentUsed = "II.2.ii.a";
-                        defineX(m, 1);
-                        defineY(m, g - 2);
-                        defineY(m - 1, getY(m - 1) - 1);
-                        defineZ(m, getZ(m - 1) + 1);
-                    } else if (!getY(m - 1) && getZ(m - 1)) {
-                        ajustmentUsed = "II.2.ii.b";
-                        defineY(m, 1);
-                        defineY(m - 1, 1);
-                        defineZ(m, getZ(m) - 1);
-                    } else if (!getY(m - 1) && !getZ(m - 1)) {
-                        ajustmentUsed = "II.2.ii.c";
-                        defineX(m, 1);
-                        defineX(m - 1, getX(m - 1) - 1);
-                        defineY(m, g - 4);
-                        defineY(m - 1, g - 1);
-                        defineZ(m + 2, 0);
-                        defineZ(m, 2);
-                    }
+                    defineZ(m, 0);
                 }
-            }
+            },
+            2: () => {
+                const { x: x1, y: y1, z: z1 } = getXYZ(1);
+                c[1] = Math.floor((x1 + y1 + z1) / g);
 
-            // if (c[m] == 2) {
-            //     ajustmentUsed = "II.3";
-            //     defineX(m, 1);
-            //     defineY(m, g - 2);
-            //     defineY(m - 1, getY(m - 1) - 1);
-            //     defineZ(0);
-            // }
+                const x2 = z1 <= getDigit(2 * m - 3) - 1 ? D(getDigit(2 * m - 2) - y1) : D(getDigit(2 * m - 2) - y1 - 1);
+                const y2 = D(getDigit(2 * m - 3) - z1 - 1);
+                const z2 = D(getDigit(1) - x2 - y2 - c[1]);
 
-        } else if (algToUse == 3) {
-            const { x: x1, y: y1, z: z1 } = getXYZ(1);
-            c[1] = Math.floor((1 + y1 + z1) / g);
+                c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            let x2;
-            if (z1 <= getDigit(2 * m - 3) - 1) {
-                x2 = D(getDigit(2 * m - 2) - y1);
-            }
-            if (z1 >= getDigit(2 * m - 3)) {
-                x2 = D(getDigit(2 * m - 2) - y1 - 1);
-            }
-            const y2 = D(getDigit(2 * m - 3) - z1 - 1);
-            const z2 = D(getDigit(1) - x1 - y2 - c[1]);
-            c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+                defineXYZ(2, x2, y2, z2);
 
-            defineXYZ(2, x2, y2, z2);
-
-            for (let i = 3; i < m; i++) {
-
-                const zim1 = getZ(i - 1);
-
-                let xi;
-                if (zim1 <= getDigit(2 * m - i - 1) - 1) {
-                    xi = 1;
+                for (let i = 3; i < m; i++) {
+                    const zim1 = getZ(i - 1);
+                    const xi = zim1 <= getDigit(2 * m - i - 1) - 1 ? 1 : 0;
+                    const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
+                    const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
+                    c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    defineXYZ(i, xi, yi, zi);
                 }
-                if (zim1 >= getDigit(2 * m - i - 1)) {
-                    xi = 0;
+
+                defineX(m, 0);
+                defineY(m, D(getDigit(m - 1) - getZ(m - 1) - c[m - 1]));
+
+                if (c[m] == 1) {
+                    ajustmentUsed = "II.1";
                 }
-                const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
-                const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
-                c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
 
-                defineXYZ(i, xi, yi, zi);
-            }
-
-            defineX(m, 0);
-            defineY(m, D(getDigit(m - 1) - getZ(m - 1) - getX(m - 1) - c[m - 1]));
-
-            if (c[m] == 1) {
-                ajustmentUsed = "III.1";
-            }
-
-            if (!c[m]) {
-                ajustmentUsed = "III.2";
-                
-            }
-
-            // if (c[m] == 2) {
-            //     if (getY(m - 1) && getZ(m - 1) != g - 1) {
-            //         ajustmentUsed = "III.3.i";
-            //         defineY(m, getY(m) - 1);
-            //         defineY(m - 1, getY(m - 1) - 1);
-            //         defineZ(m, getZ(m) + 1);
-            //     } else if (getY(m - 1) && getZ(m - 1) == g - 1) {
-            //         ajustmentUsed = "III.3.ii";
-            //         defineX(m + 1, 1);
-            //         defineY(m - 1, getY(m - 1) - 1);
-            //         defineZ(m, 0);
-            //     } else if (!getY(m - 1) && getZ(m - 1) != g - 1) {
-            //         ajustmentUsed = "III.3.iii";
-            //         defineX(m, getX(m) - 1);
-            //         defineY(m, getY(m) - 1);
-            //         defineY(m - 1, g - 1);
-            //         defineZ(m, getZ(m) + 1);
-            //     } else if (!getY(m - 1) && getZ(m - 1) == g - 1) {
-            //         ajustmentUsed = "III.3.iv";
-            //         defineX(m + 1, 1);
-            //         defineX(m, getX(m) - 1);
-            //         defineY(m - 1, g - 1);
-            //         defineZ(m, 0);
-            //     }
-            // }
-        } else if (algToUse == 4) {
-            const { x: x1, y: y1, z: z1 } = getXYZ(1);
-
-            c[1] = Math.floor((1 + y1 + z1) / g);
-            let x2;
-            if (z1 <= getDigit(2 * m - 4) - 1) {
-                x2 = D(getDigit(2 * m - 3) - y1);
-            }
-            if (z1 >= getDigit(2 * m - 4)) {
-                x2 = D(getDigit(2 * m - 3) - y1 - 1);
-            }
-            const y2 = D(getDigit(2 * m - 4) - z1 - 1);
-            const z2 = D(getDigit(1) - x1 - y2 - c[1]);
-            c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
-
-            defineXYZ(2, x2, y2, z2);
-
-            for (let i = 3; i <= m - 2; i++) {
-                const zim1 = getZ(i - 1);
-                let xi;
-                if (zim1 <= getDigit(2 * m - i - 2) - 1) {
-                    xi = 1;
-                }
-                if (zim1 >= getDigit(2 * m - i - 2)) {
-                    xi = 0;
-                }
-                const yi = D(getDigit(2 * m - i - 2) - zim1 - 1);
-                const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
-                c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
-
-                defineXYZ(i, xi, yi, zi);
-            }
-
-            if (getZ(m - 2) <= getDigit(m - 1) - 1) {
-                defineX(m - 1, 1);
-            }
-
-            if (getZ(m - 2) >= getDigit(m - 1)) {
-                defineX(m - 1, 0);
-            }
-
-            defineY(m - 1, D(getDigit(m - 1) - getZ(m - 2) - 1));
-            defineZ(m - 1, D(getDigit(m - 2) - getX(m - 2) - getY(m - 1) - c[m - 2]));
-
-            c[m - 1] = Math.floor((getX(m - 2) + getY(m - 1) + getZ(m - 1) + c[m - 2] - getDigit(m - 2)) / g);
-
-            if ((getX(m - 1) + c[m - 1]) == 1) {
-                ajustmentUsed = "IV.1";
-            } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) != g - 1) {
-                if (getZ(m - 1)) {
-                    ajustmentUsed = "IV.2.i";
-                    defineY(m - 1, getY(m - 1) + 1);
-                    defineZ(m - 1, getZ(m - 1) - 1);
-                } else if (!getZ(m - 1) && getY(m - 2)) {
-                    if (getY(m - 1) != 1 && getZ(m - 2) != g - 1) {
-                        ajustmentUsed = "IV.2.ii.a";
+                if (!c[m]) {
+                    if (getY(m)) {
+                        ajustmentUsed = "II.2.i";
                         defineX(m, 1);
-                        defineY(m - 1, getY(m - 1) - 1);
-                        defineY(m - 2, getY(m - 2) - 1);
-                        defineZ(m, getZ(m) + 1);
-                        defineZ(m - 1, 1);
-                    } else if (getY(m - 1) != 1 && getZ(m - 2) == g - 1) {
-                        ajustmentUsed = "IV.2.ii.b";
-                        defineX(m, 2);
-                        defineY(m - 1, getY(m - 1) - 2);
-                        defineY(m - 2, getY(m - 2) - 1);
-                        defineZ(m, 0);
-                        defineZ(m - 1, 3);
-                    } else if (getY(m - 1) == 1) {
-                        ajustmentUsed = "IV.2.ii.c";
-                        defineX(m, 1);
-                        defineY(m - 1, g - 1);
-                        defineY(m - 2, getY(m - 2) - 1);
-                        defineZ(m, 0);
-                        defineZ(m - 1, 3);
-                    }
-                } else if (!getZ(m - 1) && !getY(m - 2)) {
-                    if (getZ(m - 2) != g - 1) {
-                        ajustmentUsed = "IV.2.iii.a";
-                        defineX(m, 1);
-                        defineX(m + 1, getX(m + 1) - 1);
                         defineY(m, getY(m) - 1);
-                        defineY(m + 1, g - 1);
-                        defineZ(m - 1, 1);
-                        defineZ(m, getZ(m - 2) + 1);
-                    } else if (getZ(m - 2) == g - 1 && getY(m - 1) != 1) {
-                        ajustmentUsed = "IV.2.iii.b";
-                        defineX(m, 2);
-                        defineX(m + 1, getX(m + 1) - 1);
-                        defineY(m, getY(m) - 2);
-                        defineY(m + 1, g - 1);
-                        defineZ(m - 1, 3);
-                        defineZ(m, 0);
-                    } else if (getZ(m - 2) == g - 1 && getY(m - 1) == 1) {
-                        ajustmentUsed = "IV.2.iii.c";
-                        defineX(m, 1);
-                        defineX(m + 1, getX(m + 1) - 1);
+                    } else {
+                        if (getY(m - 1)) {
+                            ajustmentUsed = "II.2.ii.a";
+                            defineX(m, 1);
+                            defineY(m, g - 2);
+                            defineY(m - 1, getY(m - 1) - 1);
+                            defineZ(m, getZ(m - 1) + 1);
+                        } else if (getZ(m - 1)) {
+                            ajustmentUsed = "II.2.ii.b";
+                            defineY(m, 1);
+                            defineY(m - 1, 1);
+                            defineZ(m, getZ(m) - 1);
+                        } else {
+                            ajustmentUsed = "II.2.ii.c";
+                            defineX(m, 1);
+                            defineX(m - 1, getX(m - 1) - 1);
+                            defineY(m, g - 4);
+                            defineY(m - 1, g - 1);
+                            defineZ(m + 2, 0);
+                            defineZ(m, 2);
+                        }
+                    }
+                }
+
+                // if (c[m] == 2) {
+                //     ajustmentUsed = "II.3";
+                //     defineX(m, 1);
+                //     defineY(m, g - 2);
+                //     defineY(m - 1, getY(m - 1) - 1);
+                //     defineZ(0);
+                // }
+
+            },
+            3: () => {
+                const { x: x1, y: y1, z: z1 } = getXYZ(1);
+                c[1] = Math.floor((1 + y1 + z1) / g);
+
+                const x2 = z1 <= getDigit(2 * m - 3) - 1 ? D(getDigit(2 * m - 2) - y1) : D(getDigit(2 * m - 2) - y1 - 1);
+                const y2 = D(getDigit(2 * m - 3) - z1 - 1);
+                const z2 = D(getDigit(1) - x1 - y2 - c[1]);
+
+                c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+
+                defineXYZ(2, x2, y2, z2);
+
+                for (let i = 3; i < m; i++) {
+                    const zim1 = getZ(i - 1);
+                    const xi = zim1 <= getDigit(2 * m - i - 1) - 1 ? 1 : 0;
+                    const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
+                    const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
+                    c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    defineXYZ(i, xi, yi, zi);
+                }
+
+                defineX(m, 0);
+                defineY(m, D(getDigit(m - 1) - getZ(m - 1) - getX(m - 1) - c[m - 1]));
+
+                if (c[m] == 1) {
+                    ajustmentUsed = "III.1";
+                }
+
+                if (!c[m]) {
+                    ajustmentUsed = "III.2";
+
+                }
+
+                // if (c[m] == 2) {
+                //     if (getY(m - 1) && getZ(m - 1) != g - 1) {
+                //         ajustmentUsed = "III.3.i";
+                //         defineY(m, getY(m) - 1);
+                //         defineY(m - 1, getY(m - 1) - 1);
+                //         defineZ(m, getZ(m) + 1);
+                //     } else if (getY(m - 1) && getZ(m - 1) == g - 1) {
+                //         ajustmentUsed = "III.3.ii";
+                //         defineX(m + 1, 1);
+                //         defineY(m - 1, getY(m - 1) - 1);
+                //         defineZ(m, 0);
+                //     } else if (!getY(m - 1) && getZ(m - 1) != g - 1) {
+                //         ajustmentUsed = "III.3.iii";
+                //         defineX(m, getX(m) - 1);
+                //         defineY(m, getY(m) - 1);
+                //         defineY(m - 1, g - 1);
+                //         defineZ(m, getZ(m) + 1);
+                //     } else if (!getY(m - 1) && getZ(m - 1) == g - 1) {
+                //         ajustmentUsed = "III.3.iv";
+                //         defineX(m + 1, 1);
+                //         defineX(m, getX(m) - 1);
+                //         defineY(m - 1, g - 1);
+                //         defineZ(m, 0);
+                //     }
+                // }
+            },
+            4: () => {
+                const { x: x1, y: y1, z: z1 } = getXYZ(1);
+
+                c[1] = Math.floor((1 + y1 + z1) / g);
+
+                const x2 = z1 <= getDigit(2 * m - 4) - 1 ? D(getDigit(2 * m - 3) - y1) : D(getDigit(2 * m - 3) - y1 - 1);
+                const y2 = D(getDigit(2 * m - 4) - z1 - 1);
+                const z2 = D(getDigit(1) - x1 - y2 - c[1]);
+
+                c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+
+                defineXYZ(2, x2, y2, z2);
+
+                for (let i = 3; i <= m - 2; i++) {
+                    const zim1 = getZ(i - 1);
+                    const xi = zim1 <= getDigit(2 * m - i - 2) - 1 ? 1 : 0;
+                    const yi = D(getDigit(2 * m - i - 2) - zim1 - 1);
+                    const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
+                    c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    defineXYZ(i, xi, yi, zi);
+                }
+
+                if (getZ(m - 2) <= getDigit(m - 1) - 1) {
+                    defineX(m - 1, 1);
+                }
+
+                if (getZ(m - 2) >= getDigit(m - 1)) {
+                    defineX(m - 1, 0);
+                }
+
+                defineY(m - 1, D(getDigit(m - 1) - getZ(m - 2) - 1));
+                defineZ(m - 1, D(getDigit(m - 2) - getX(m - 2) - getY(m - 1) - c[m - 2]));
+
+                c[m - 1] = Math.floor((getX(m - 2) + getY(m - 1) + getZ(m - 1) + c[m - 2] - getDigit(m - 2)) / g);
+
+                if ((getX(m - 1) + c[m - 1]) == 1) {
+                    ajustmentUsed = "IV.1";
+                } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) != g - 1) {
+                    if (getZ(m - 1)) {
+                        ajustmentUsed = "IV.2.i";
+                        defineY(m - 1, getY(m - 1) + 1);
+                        defineZ(m - 1, getZ(m - 1) - 1);
+                    } else if (!getZ(m - 1) && getY(m - 2)) {
+                        if (getY(m - 1) != 1) {
+                            if (getZ(m - 2) != g - 1) {
+                                ajustmentUsed = "IV.2.ii.a";
+                                defineX(m, 1);
+                                defineY(m - 1, getY(m - 1) - 1);
+                                defineY(m - 2, getY(m - 2) - 1);
+                                defineZ(m, getZ(m) + 1);
+                                defineZ(m - 1, 1);
+                            } else {
+                                ajustmentUsed = "IV.2.ii.b";
+                                defineX(m, 2);
+                                defineY(m - 1, getY(m - 1) - 2);
+                                defineY(m - 2, getY(m - 2) - 1);
+                                defineZ(m, 0);
+                                defineZ(m - 1, 3);
+
+                            }
+                        } else if (getY(m - 1) != 1 && getZ(m - 2) == g - 1) {
+                        } else if (getY(m - 1) == 1) {
+                            ajustmentUsed = "IV.2.ii.c";
+                            defineX(m, 1);
+                            defineY(m - 1, g - 1);
+                            defineY(m - 2, getY(m - 2) - 1);
+                            defineZ(m, 0);
+                            defineZ(m - 1, 3);
+                        }
+                    } else if (!getZ(m - 1) && !getY(m - 2)) {
+                        if (getZ(m - 2) != g - 1) {
+                            ajustmentUsed = "IV.2.iii.a";
+                            defineX(m, 1);
+                            defineX(m + 1, getX(m + 1) - 1);
+                            defineY(m, getY(m) - 1);
+                            defineY(m + 1, g - 1);
+                            defineZ(m - 1, 1);
+                            defineZ(m, getZ(m - 2) + 1);
+                        } else if (getZ(m - 2) == g - 1 && getY(m - 1) != 1) {
+                            ajustmentUsed = "IV.2.iii.b";
+                            defineX(m, 2);
+                            defineX(m + 1, getX(m + 1) - 1);
+                            defineY(m, getY(m) - 2);
+                            defineY(m + 1, g - 1);
+                            defineZ(m - 1, 3);
+                            defineZ(m, 0);
+                        } else if (getZ(m - 2) == g - 1 && getY(m - 1) == 1) {
+                            ajustmentUsed = "IV.2.iii.c";
+                            defineX(m, 1);
+                            defineX(m + 1, getX(m + 1) - 1);
+                            defineY(m, g - 1);
+                            defineY(m + 1, g - 1);
+                            defineZ(m - 1, 3);
+                            defineZ(m, 0);
+                        }
+                    }
+                } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) == g - 1) {
+                    ajustmentUsed = "IV.3";
+                    defineX(m, 1);
+                    defineY(m, g - 2);
+                    defineY(m + 1, getY(m + 1) - 1);
+                    defineZ(m - 1, 1);
+                    defineZ(m, getZ(m) + 1);
+                } else if (getX(m - 1) + c[m - 1] == 2 && !getX(m - 1) && c[m - 1] == 2) {
+                    if (getZ(m - 1) != g - 1) {
+                        ajustmentUsed = "IV.4.i";
+                        defineY(m, getY(m) - 1);
+                        defineZ(m - 1, getZ(m - 1) + 1);
+                    } else if (getZ(m - 1) == g - 1 && getZ(m - 2) != g - 1) {
+                        if (getY(m - 2)) {
+                            ajustmentUsed = "IV.4.ii.a";
+                            defineX(m, 1);
+                            defineY(m + 1, getY(m + 1) - 1);
+                            defineY(m, getY(m) - 2);
+                            defineZ(m, getZ(m) + 1);
+                            defineZ(m - 1, 1);
+                        } else if (!getY(m - 2)) {
+                            ajustmentUsed = "IV.4.ii.b";
+                            defineX(m, 1);
+                            defineX(m + 1, getX(m + 1) - 1);
+                            defineY(m, getY(m) - 2);
+                            defineY(m + 1, g - 1);
+                            defineZ(m, getZ(m) + 1);
+                            defineZ(m - 1, 1);
+                        }
+                    } else if (getZ(m - 1) == g - 1 && getZ(m - 2) == g - 1) {
+                        if (getY(m - 1) != g - 1 && getY(m - 1) != g - 2) {
+                            ajustmentUsed = "IV.4.iii.a";
+                            defineX(m, g - 2);
+                            defineY(m, getY(m) + 2);
+                            defineZ(m, g - 2);
+                            defineZ(m - 1, g - 2);
+                            if (getY(m - 2) != g - 1) {
+                                defineX(m + 1, getX(m + 1) - 1);
+                                defineY(m + 1, getY(m + 1) + 1);
+                            } else {
+                                defineY(m + 1, 0);
+                            }
+                        } else {
+                            ajustmentUsed = "IV.4.iii.b";
+                            defineX(m, 2);
+                            defineY(m, getY(m) - 3);
+                            defineZ(m, 0);
+                            defineZ(m - 1, 3);
+                            if (getY(m - 2)) {
+                                defineY(m + 1, getY(m + 1) - 1);
+                            } else {
+                                defineX(m + 1, getX(m + 1) - 1);
+                                defineY(m + 1, g - 1);
+                            }
+                        }
+                    }
+                } else if (getX(m - 1) + c[m - 1] == 2 && getX(m - 1) == 1 && c[m - 1] == 1) {
+                    if (getZ(m - 1) != g - 1 && getY(m - 1)) {
+                        ajustmentUsed = "IV.5.i";
+                        defineY(m, getY(m) - 1);
+                        defineZ(m - 1, getZ(m - 1) + 1);
+                    } else if (getZ(m - 1) != g - 1 && !getY(m - 1)) {
+                        ajustmentUsed = "IV.5.ii";
+                        defineX(m, 0);
                         defineY(m, g - 1);
-                        defineY(m + 1, g - 1);
-                        defineZ(m - 1, 3);
-                        defineZ(m, 0);
+                        defineZ(m - 1, getZ(m - 1) + 1);
+                    } else if (getZ(m - 1) == g - 1 && getZ(m - 2)) {
+                        if (getY(m - 2) != g - 1) {
+                            ajustmentUsed = "IV.5.iii.a";
+                            defineX(m, 0);
+                            defineY(m, getY(m) + 1);
+                            defineY(m + 1, getY(m + 1) + 1);
+                            defineZ(m, getZ(m) - 1);
+                            defineZ(m - 1, g - 2);
+                        } else if (getY(m - 2) == g - 1 && getY(m - 1) > 1) {
+                            ajustmentUsed = "IV.5.iii.b";
+                            defineX(m, 2);
+                            defineY(m, getY(m) - 2);
+                            defineY(m + 1, g - 2);
+                            defineZ(m, getZ(m) + 1);
+                            defineZ(m - 1, 1);                            
+                        } else if (getY(m - 2) == g - 1 && !getY(m - 1)) {
+                            ajustmentUsed = "IV.5.iii.c";
+                            defineY(m, g - 2);
+                            defineY(m + 1, g - 2);
+                            defineZ(m, getZ(m) + 1);
+                            defineZ(m - 1, 1);    
+                        } else if (getY(m - 2) == g - 1 && getY(m - 1) == 1) {
+                            ajustmentUsed = "IV.5.iii.d";
+                            defineY(m, g - 1);
+                            defineY(m + 1, g - 2);
+                            defineZ(m, getZ(m) + 1);
+                            defineZ(m - 1, 1);
+                        }
+                    } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && getY(m - 2)) {
+                        if (getY(m - 1) > 1) {
+                            ajustmentUsed = "IV.5.iv.a";
+                        } else if (!getY(m - 1)) {
+                            ajustmentUsed = "IV.5.iv.b";
+                        } else if (getY(m - 1) == 1) {
+                            ajustmentUsed = "IV.5.iv.c";
+                        }
+                    } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && !getY(m - 2)) {
+                        if (getY(m - 1) > 1) {
+                            ajustmentUsed = "IV.5.v.a";
+                        } else if (!getY(m - 1)) {
+                            ajustmentUsed = "IV.5.v.b";
+                        } else if (getY(m - 1) == 1) {
+                            ajustmentUsed = "IV.5.v.c";
+                        }
                     }
+                } else if (getX(m - 1) + c[m - 1] == 3) {
+                    ajustmentUsed = "IV.6";
                 }
-            } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) == g - 1) {
-                ajustmentUsed = "IV.3";
-                defineX(m, 1);
-                defineY(m, g - 2);
-                defineY(m + 1, getY(m + 1) - 1);
-                defineZ(m - 1, 1);
-                defineZ(m, getZ(m) + 1);
-            } else if (getX(m - 1) + c[m - 1] == 2 && !getX(m - 1) && c[m - 1] == 2) {
-                if (getZ(m - 1) != g - 1) {
-                    ajustmentUsed = "IV.4.i";
-                } else if (getZ(m - 1) == g - 1 && getZ(m - 2) != g - 1) {
-                    if (getY(m - 2)) {
-                        ajustmentUsed = "IV.4.ii.a";
-                    } else if (!getY(m - 2)) {
-                        ajustmentUsed = "IV.4.ii.b";
-                    }
-                } else if (getZ(m - 1) == g - 1 && getZ(m - 2) == g - 1) {
-                    if (getY(m - 1) != g - 1 && getY(m - 1) != g - 2) {
-                        ajustmentUsed = "IV.4.iii.a";
-                    } else if (getY(m - 1) == g - 1 || getY(m - 1) && g - 2) {
-                        ajustmentUsed = "IV.4.iii.b";
-                    }
-                }
-            } else if (getX(m - 1) + c[m - 1] == 2 && getX(m - 1) == 1 && c[m - 1] == 1) {
-                if (getZ(m - 1) != g - 1 && getY(m - 1)) {
-                    ajustmentUsed = "IV.5.i";
-                } else if (getZ(m - 1) != g - 1 && !getY(m - 1)) {
-                    ajustmentUsed = "IV.5.ii";
-                } else if (getZ(m - 1) == g - 1 && getZ(m - 2)) {
-                    if (getY(m - 2) != g - 1) {
-                        ajustmentUsed = "IV.5.iii.a";
-                    } else if (getY(m - 2) == g - 1 && getY(m - 1) > 1) {
-                        ajustmentUsed = "IV.5.iii.b";
-                    } else if (getY(m - 2) == g - 1 && !getY(m - 1)) {
-                        ajustmentUsed = "IV.5.iii.c";
-                    } else if (getY(m - 2) == g - 1 && getY(m - 1) == 1) {
-                        ajustmentUsed = "IV.5.iii.d";
-                    }
-                } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && getY(m - 2)) {
-                    if (getY(m - 1) > 1) {
-                        ajustmentUsed = "IV.5.iv.a";
-                    } else if (!getY(m - 1)) {
-                        ajustmentUsed = "IV.5.iv.b";
-                    } else if (getY(m - 1) == 1) {
-                        ajustmentUsed = "IV.5.iv.c";
-                    }
-                } else if (getZ(m - 1) == g - 1 && !getZ(m - 2) && !getY(m - 2)) {
-                    if (getY(m - 1) > 1) {
-                        ajustmentUsed = "IV.5.v.a";
-                    } else if (!getY(m - 1)) {
-                        ajustmentUsed = "IV.5.v.b";
-                    } else if (getY(m - 1) == 1) {
-                        ajustmentUsed = "IV.5.v.c";
-                    }
-                }
-            } else if (getX(m - 1) + c[m - 1] == 3) {
-                ajustmentUsed = "IV.6";
+            },
+            5: () => {
+                const s = calcStr.add(calcStr.pow(g, m), calcStr.pow(g, m - 1));
+                const ni = calcStr.sub(number, s);
+                _debug = false;
+                const { typeUsed: tu, algToUse: atu, ajustmentUsed: au } = findThePalindromes(ni, true);
+                typeUsed = tu;
+                algToUse = atu;
+                ajustmentUsed = au;
             }
-        } else if (algToUse == 5) {
-            const calcStr = {
-                pow: (n1, n2) => {
-                    let n1s = n1.toString();
-                    let result = n1s;
-                    for(let i = 1; i < n2; i++) {
-                        result = calcStr.mult(result, n1s);
-                    }
-                    return result;
-                },
-                mult: (n1, n2) => {
-                    let result = "0";
-                    let loop = n2;
-                    while(loop != '0') {
-                        loop = calcStr.sub(loop, "1");
-                        result = calcStr.add(result, n1);
-                    }
-                    return result;
-                },
-                add: (n1, n2) => {
-                    let carrier = 0;
-                    let number1 = n1.split('').reverse();
-                    let number2 = n2.split('').reverse();
-                    let result = [];
+        }
 
-                    if (number1.length > number2.length) {
-                        for (let i = 0; i < n1.length - n2.length; i++) {
-                            number2.push('0');
-                        }
-                    }
-
-                    if (number1.length < number2.length) {
-                        for (let i = 0; i < n2.length - n1.length; i++) {
-                            number1.push('0');
-                        }
-                    }
-
-                    for (let i = 0; i < number1.length; i++) {
-                        number1[i] = parseInt(number1[i], g);
-                        number2[i] = parseInt(number2[i], g);
-                    }
-
-                    for (let i = 0; i < number1.length; i++) {
-                        let r = number1[i] + number2[i] + carrier;
-                        if (r >= g) {
-                            r -= g
-                            carrier = 1;
-                        } else {
-                            carrier = 0;
-                        }
-
-                        result.push(r.toString(g));
-                    }
-
-                    if(carrier) {
-                        result.push(1);
-                    }
-
-                    return result.reverse().join('');                    
-                },
-                sub: (n1, n2) => {
-                    let carrier = 0;
-                    let bigN;
-                    let smallN;
-                    let result = [];
-                    let number1 = n1.split('').reverse();
-                    let number2 = n2.split('').reverse();
-
-                    if (number1.length > number2.length) {
-                        for (let i = 0; i < n1.length - n2.length; i++) {
-                            number2.push('0');
-                        }
-                    }
-
-                    if (number1.length < number2.length) {
-                        for (let i = 0; i < n2.length - n1.length; i++) {
-                            number1.push('0');
-                        }
-                    }
-
-                    for (let i = 0; i < number1.length; i++) {
-                        number1[i] = parseInt(number1[i], g);
-                        number2[i] = parseInt(number2[i], g);
-                    }
-
-                    bigN = number1;
-                    smallN = number2;
-
-                    number1.reverse();
-                    number2.reverse();
-
-                    for (let i = 0; i < number1.length; i++) {
-                        const n1 = parseInt(number1[i]);
-                        const n2 = parseInt(number2[i]);
-                        if (n1 > n2) break;
-                        if (n1 < n2) {
-                            bigN = number2;
-                            smallN = number1;
-                            break;
-                        }
-                    }
-
-                    number1.reverse();
-                    number2.reverse();
-
-                    for (let i = 0; i < bigN.length; i++) {
-                        let r = bigN[i] - smallN[i] - carrier;
-
-                        if (r < 0) {
-                            r = ((r % g) + g) % g;
-                            carrier = 1;
-                        } else {
-                            carrier = 0;
-                        }
-
-                        result.push(r.toString(g));
-                    }
-
-                    result.reverse();
-                    while (result.length > 1 && result[0] == '0') {
-                        result.shift();
-                    }
-
-                    return result.join('');
-
-                }
-            }
-            const s = calcStr.add(calcStr.pow(g, m), calcStr.pow(g, m - 1));
-            const ni = calcStr.sub(number, s);
-            _debug = false;
-            const { typeUsed: tu, algToUse: atu, ajustmentUsed: au } = findThePalindromes(ni, true);
-            typeUsed = tu;
-            algToUse = atu;
-            ajustmentUsed = au;
+        if (algs[algToUse]) {
+            algs[algToUse]();
         }
     }
-
     defineFirstDigits();
     runAlg();
 
@@ -843,6 +859,15 @@ findThePalindromes = (number, _debug = false) => {
             }
             p[index].reverse();
         }
+
+        const p1 = p[1].join('');
+        const p2 = p[2].join('');
+        const p3 = p[3].join('');
+        
+        const psPlusValue = calcStr.add(calcStr.add(p1, p2), p3);
+        console.log(number);
+        console.log(psPlusValue);
+        console.log(number == psPlusValue);
 
         pPreRender(1);
         pPreRender(2);
@@ -886,7 +911,6 @@ findThePalindromes = (number, _debug = false) => {
             'line-height: 35px'
         ].join(';');
 
-
         console.log(typeUsed, algToUse, ajustmentUsed);
         console.log(
             print,
@@ -901,8 +925,8 @@ findThePalindromes = (number, _debug = false) => {
         );
     }
 
-    if(_debug) debug();
-    
+    if (_debug) debug();
+
     return {
         typeUsed,
         algToUse,
