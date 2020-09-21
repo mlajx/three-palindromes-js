@@ -1,84 +1,19 @@
-testNumber = () => {
 
-    //missing
-    //II.2.ii.c
+/** Maybe those is unnecessary cases
+ *  II.1
+ *  II.3
+ *  III.1 
+ *  III.3.i
+ *  III.3.ii
+ *  III.3.iii 
+ *  III.3.iv
+ */
 
-    // const number = "220159005"; //?!
-    // const number = "52159035" //?!
-
-
-    // const number = "4692801" //I.1
-    // const number = "4004982" //I.2
-    // const number = "399990000"; //I.3
-
-
-    // const number = "29372542"; //II.2.i
-    // const number = "20757504"; //II.2.ii.a
-    // const number = "20159005" //II.2.ii.b
-
-    // const number = "12266420096203532444"; //IV.1
-    const number = "127285155221444"; //IV.2.i
-
-    // const number = "120205690315959428539";
-
-    // const number = "12267420096203532444"; important to test
-
-    // const number = "2718281828459045235360";
-
-    //A1
-    // const number = "35484523543247631788132";
-
-    //A2
-    // const number = "153159265358979323845";
-
-    //A3
-    // const number = "303159265358979323847";
-    //A4
-    // const number = "303159265358979323841";
-    //A5
-    // const number = "103159265358979323847";
-    //A6
-    // const number = "102159265358979323842";
-
-    //B1
-    // const number = "104159265358979323842";
-    //B2
-    // const number = "104159265358979323844";
-    //B3
-    // const number = "120159265358979323840";
-    //B4
-    // const number = "112159265358979323840";
-    //B5
-    // const number = "110159265358979323841";
-    //B6
-    // const number = "113159265358979323841";
-    //B7 (and B2)
-    // const number = "113439265358979323843";
-
-    // const number = "123159265358979323843"; //B2 and B7 ??
-    // const number = "113159265358979323840"; //B4 and B6 ??
-
-    //special number
-    // const number = "14315926520897932384";
-    // findThePalindromes(number);
-    // findAllTypeOfNumbers();
-}
-
-// findAllTypeOfNumbers = () => {
-//     let allNumbers = {
-//     }
-
-//     let finder = "";
-//     let i = 200000000;
-//     while (finder != "IV.2.i") {
-//         console.log(i);
-//         let a = findThePalindromes(i.toString(10));
-//         finder = a.ajustmentUsed;
-//         i++;
-//     }
-// }
-
-findThePalindromes = (number) => {
+ /***
+  * important commands
+  * grep ' ajustmentUsed ' result.txt | tail
+  */
+findThePalindromes = (number, _debug = false) => {
 
     const l = number.length;
     let g = 10;
@@ -429,7 +364,6 @@ findThePalindromes = (number) => {
 
             defineX(m + 1, 0);
 
-
             if (c[m] == 1) {
                 ajustmentUsed = "I.1";
                 return;
@@ -519,14 +453,13 @@ findThePalindromes = (number) => {
                 }
             }
 
-            //Unnecessary Case ?!
-            if (c[m] == 2) {
-                ajustmentUsed = "II.3";
-                defineX(m, 1);
-                defineY(m, g - 2);
-                defineY(m - 1, getY(m - 1) - 1);
-                defineZ(0);
-            }
+            // if (c[m] == 2) {
+            //     ajustmentUsed = "II.3";
+            //     defineX(m, 1);
+            //     defineY(m, g - 2);
+            //     defineY(m - 1, getY(m - 1) - 1);
+            //     defineZ(0);
+            // }
 
         } else if (algToUse == 3) {
             const { x: x1, y: y1, z: z1 } = getXYZ(1);
@@ -543,7 +476,7 @@ findThePalindromes = (number) => {
             const z2 = D(getDigit(1) - x1 - y2 - c[1]);
             c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
 
-            defineXYZ(2, x2, y2, z2, true);
+            defineXYZ(2, x2, y2, z2);
 
             for (let i = 3; i < m; i++) {
 
@@ -563,7 +496,7 @@ findThePalindromes = (number) => {
                 defineXYZ(i, xi, yi, zi);
             }
 
-            defineX(m, 0, true);
+            defineX(m, 0);
             defineY(m, D(getDigit(m - 1) - getZ(m - 1) - getX(m - 1) - c[m - 1]));
 
             if (c[m] == 1) {
@@ -572,34 +505,34 @@ findThePalindromes = (number) => {
 
             if (!c[m]) {
                 ajustmentUsed = "III.2";
-                defineX(m + 1, 1)
+                
             }
 
-            if (c[m] == 2) {
-                if (getY(m - 1) && getZ(m - 1) != g - 1) {
-                    ajustmentUsed = "III.3.i";
-                    defineY(m, getY(m) - 1);
-                    defineY(m - 1, getY(m - 1) - 1);
-                    defineZ(m, getZ(m) + 1);
-                } else if (getY(m - 1) && getZ(m - 1) == g - 1) {
-                    ajustmentUsed = "III.3.ii";
-                    defineX(m + 1, 1);
-                    defineY(m - 1, getY(m - 1) - 1);
-                    defineZ(m, 0);
-                } else if (!getY(m - 1) && getZ(m - 1) != g - 1) {
-                    ajustmentUsed = "III.3.iii";
-                    defineX(m, getX(m) - 1);
-                    defineY(m, getY(m) - 1);
-                    defineY(m - 1, g - 1);
-                    defineZ(m, getZ(m) + 1);
-                } else if (!getY(m - 1) && getZ(m - 1) == g - 1) {
-                    ajustmentUsed = "III.3.iv";
-                    defineX(m + 1, 1);
-                    defineX(m, getX(m) - 1);
-                    defineY(m - 1, g - 1);
-                    defineZ(m, 0);
-                }
-            }
+            // if (c[m] == 2) {
+            //     if (getY(m - 1) && getZ(m - 1) != g - 1) {
+            //         ajustmentUsed = "III.3.i";
+            //         defineY(m, getY(m) - 1);
+            //         defineY(m - 1, getY(m - 1) - 1);
+            //         defineZ(m, getZ(m) + 1);
+            //     } else if (getY(m - 1) && getZ(m - 1) == g - 1) {
+            //         ajustmentUsed = "III.3.ii";
+            //         defineX(m + 1, 1);
+            //         defineY(m - 1, getY(m - 1) - 1);
+            //         defineZ(m, 0);
+            //     } else if (!getY(m - 1) && getZ(m - 1) != g - 1) {
+            //         ajustmentUsed = "III.3.iii";
+            //         defineX(m, getX(m) - 1);
+            //         defineY(m, getY(m) - 1);
+            //         defineY(m - 1, g - 1);
+            //         defineZ(m, getZ(m) + 1);
+            //     } else if (!getY(m - 1) && getZ(m - 1) == g - 1) {
+            //         ajustmentUsed = "III.3.iv";
+            //         defineX(m + 1, 1);
+            //         defineX(m, getX(m) - 1);
+            //         defineY(m - 1, g - 1);
+            //         defineZ(m, 0);
+            //     }
+            // }
         } else if (algToUse == 4) {
             const { x: x1, y: y1, z: z1 } = getXYZ(1);
 
@@ -652,7 +585,7 @@ findThePalindromes = (number) => {
                 if (getZ(m - 1)) {
                     ajustmentUsed = "IV.2.i";
                     defineY(m - 1, getY(m - 1) + 1);
-                    defineZ(m - 1, getY(m - 1) - 1);
+                    defineZ(m - 1, getZ(m - 1) - 1);
                 } else if (!getZ(m - 1) && getY(m - 2)) {
                     if (getY(m - 1) != 1 && getZ(m - 2) != g - 1) {
                         ajustmentUsed = "IV.2.ii.a";
@@ -682,17 +615,34 @@ findThePalindromes = (number) => {
                         defineX(m, 1);
                         defineX(m + 1, getX(m + 1) - 1);
                         defineY(m, getY(m) - 1);
-                        defineY(m + 1, getY(m + 1), g - 1);
+                        defineY(m + 1, g - 1);
                         defineZ(m - 1, 1);
                         defineZ(m, getZ(m - 2) + 1);
                     } else if (getZ(m - 2) == g - 1 && getY(m - 1) != 1) {
                         ajustmentUsed = "IV.2.iii.b";
+                        defineX(m, 2);
+                        defineX(m + 1, getX(m + 1) - 1);
+                        defineY(m, getY(m) - 2);
+                        defineY(m + 1, g - 1);
+                        defineZ(m - 1, 3);
+                        defineZ(m, 0);
                     } else if (getZ(m - 2) == g - 1 && getY(m - 1) == 1) {
                         ajustmentUsed = "IV.2.iii.c";
+                        defineX(m, 1);
+                        defineX(m + 1, getX(m + 1) - 1);
+                        defineY(m, g - 1);
+                        defineY(m + 1, g - 1);
+                        defineZ(m - 1, 3);
+                        defineZ(m, 0);
                     }
                 }
             } else if (!(getX(m - 1) + c[m - 1]) && getY(m - 1) == g - 1) {
                 ajustmentUsed = "IV.3";
+                defineX(m, 1);
+                defineY(m, g - 2);
+                defineY(m + 1, getY(m + 1) - 1);
+                defineZ(m - 1, 1);
+                defineZ(m, getZ(m) + 1);
             } else if (getX(m - 1) + c[m - 1] == 2 && !getX(m - 1) && c[m - 1] == 2) {
                 if (getZ(m - 1) != g - 1) {
                     ajustmentUsed = "IV.4.i";
@@ -745,85 +695,139 @@ findThePalindromes = (number) => {
                 ajustmentUsed = "IV.6";
             }
         } else if (algToUse == 5) {
-            const s = Math.pow(g, m) + Math.pow(g, m - 1);
-            const ni = parseInt(number) - s;
-
-            const subString = (n1, n2) => {
-                let carrier = 0;
-                let bigN;
-                let smallN;
-                let result = [];
-                let number1 = n1.split('');
-                let number2 = n2.split('');
-
-                number1.reverse();
-                number2.reverse();
-
-                if (number1.length > number2.length) {
-                    for (let i = 0; i < n1.length - n2.length; i++) {
-                        number2.push('0');
+            const calcStr = {
+                pow: (n1, n2) => {
+                    let n1s = n1.toString();
+                    let result = n1s;
+                    for(let i = 1; i < n2; i++) {
+                        result = calcStr.mult(result, n1s);
                     }
-                }
-
-                if (number1.length < number2.length) {
-                    for (let i = 0; i < n2.length - n1.length; i++) {
-                        number1.push('0');
+                    return result;
+                },
+                mult: (n1, n2) => {
+                    let result = "0";
+                    let loop = n2;
+                    while(loop != '0') {
+                        loop = calcStr.sub(loop, "1");
+                        result = calcStr.add(result, n1);
                     }
-                }
+                    return result;
+                },
+                add: (n1, n2) => {
+                    let carrier = 0;
+                    let number1 = n1.split('').reverse();
+                    let number2 = n2.split('').reverse();
+                    let result = [];
 
-
-                for (let i = 0; i < number1.length; i++) {
-                    number1[i] = parseInt(number1[i], g);
-                    number2[i] = parseInt(number2[i], g);
-                }
-
-                bigN = number1;
-                smallN = number2;
-
-                number1.reverse();
-                number2.reverse();
-
-                for (let i = 0; i < number1.length; i++) {
-                    const n1 = parseInt(number1[i]);
-                    const n2 = parseInt(number2[i]);
-                    if (n1 > n2) break;
-                    if (n1 < n2) {
-                        bigN = number2;
-                        smallN = number1;
-                        break;
-                    }
-                }
-
-                number1.reverse();
-                number2.reverse();
-
-                for (let i = 0; i < bigN.length; i++) {
-                    let r = smallN[i] ? bigN[i] - smallN[i] - carrier : bigN[i] - carrier;
-
-                    if (r < 0) {
-                        r = ((r % g) + g) % g;
-                        carrier = 1;
-                    } else {
-                        carrier = 0;
+                    if (number1.length > number2.length) {
+                        for (let i = 0; i < n1.length - n2.length; i++) {
+                            number2.push('0');
+                        }
                     }
 
-                    result.push(r.toString(g));
+                    if (number1.length < number2.length) {
+                        for (let i = 0; i < n2.length - n1.length; i++) {
+                            number1.push('0');
+                        }
+                    }
+
+                    for (let i = 0; i < number1.length; i++) {
+                        number1[i] = parseInt(number1[i], g);
+                        number2[i] = parseInt(number2[i], g);
+                    }
+
+                    for (let i = 0; i < number1.length; i++) {
+                        let r = number1[i] + number2[i] + carrier;
+                        if (r >= g) {
+                            r -= g
+                            carrier = 1;
+                        } else {
+                            carrier = 0;
+                        }
+
+                        result.push(r.toString(g));
+                    }
+
+                    if(carrier) {
+                        result.push(1);
+                    }
+
+                    return result.reverse().join('');                    
+                },
+                sub: (n1, n2) => {
+                    let carrier = 0;
+                    let bigN;
+                    let smallN;
+                    let result = [];
+                    let number1 = n1.split('').reverse();
+                    let number2 = n2.split('').reverse();
+
+                    if (number1.length > number2.length) {
+                        for (let i = 0; i < n1.length - n2.length; i++) {
+                            number2.push('0');
+                        }
+                    }
+
+                    if (number1.length < number2.length) {
+                        for (let i = 0; i < n2.length - n1.length; i++) {
+                            number1.push('0');
+                        }
+                    }
+
+                    for (let i = 0; i < number1.length; i++) {
+                        number1[i] = parseInt(number1[i], g);
+                        number2[i] = parseInt(number2[i], g);
+                    }
+
+                    bigN = number1;
+                    smallN = number2;
+
+                    number1.reverse();
+                    number2.reverse();
+
+                    for (let i = 0; i < number1.length; i++) {
+                        const n1 = parseInt(number1[i]);
+                        const n2 = parseInt(number2[i]);
+                        if (n1 > n2) break;
+                        if (n1 < n2) {
+                            bigN = number2;
+                            smallN = number1;
+                            break;
+                        }
+                    }
+
+                    number1.reverse();
+                    number2.reverse();
+
+                    for (let i = 0; i < bigN.length; i++) {
+                        let r = bigN[i] - smallN[i] - carrier;
+
+                        if (r < 0) {
+                            r = ((r % g) + g) % g;
+                            carrier = 1;
+                        } else {
+                            carrier = 0;
+                        }
+
+                        result.push(r.toString(g));
+                    }
+
+                    result.reverse();
+                    while (result.length > 1 && result[0] == '0') {
+                        result.shift();
+                    }
+
+                    return result.join('');
+
                 }
-
-                result.reverse();
-                while (result.length > 1 && result[0] == '0') {
-                    result.shift();
-                }
-
-                return result.join('');
-
             }
-
-            console.log(subString("20", "5000"));
-            // console.log(subString("123456789999999445152461267265272524451945924", "100000000000000000000000000000000000000000000"))
-            // console.log(subString("7014986288754326472", "5261428345497037521"));
-            // console.log(subString("5261428345497037521", "7014986288754326472"));
-            // console.log(subString("100000000012", "100000000014"));
+            const s = calcStr.add(calcStr.pow(g, m), calcStr.pow(g, m - 1));
+            const ni = calcStr.sub(number, s);
+            _debug = false;
+            const { typeUsed: tu, algToUse: atu, ajustmentUsed: au } = findThePalindromes(ni, true);
+            typeUsed = tu;
+            algToUse = atu;
+            ajustmentUsed = au;
         }
     }
 
@@ -897,8 +901,8 @@ findThePalindromes = (number) => {
         );
     }
 
-    // debug();
-
+    if(_debug) debug();
+    
     return {
         typeUsed,
         algToUse,
