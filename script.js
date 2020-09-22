@@ -682,9 +682,7 @@ findThePalindromes = (n, _debug = false) => {
                                 defineY(m - 2, getY(m - 2) - 1);
                                 defineZ(m, 0);
                                 defineZ(m - 1, 3);
-
                             }
-                        } else if (getY(m - 1) != 1 && getZ(m - 2) == g - 1) {
                         } else if (getY(m - 1) == 1) {
                             ajustmentUsed = "IV.2.ii.c";
                             defineX(m, 1);
