@@ -7,7 +7,7 @@
  * important commands
  * grep ' ajustmentUsed ' result.txt | tail
  */
-findThePalindromes = (n, _debug = false) => {
+findThePalindromes = (n, _debug = false, _debug2 = true) => {
 
     const l = n.length;
     let g = 10;
@@ -908,6 +908,9 @@ findThePalindromes = (n, _debug = false) => {
 
         const psPlusValue = calcStr.add(calcStr.add(p1, p2), p3);
 
+        if (n != psPlusValue) {
+            console.log(n);
+        }
         console.log(n == psPlusValue);
 
         pPreRender(1);
@@ -958,20 +961,26 @@ findThePalindromes = (n, _debug = false) => {
             'background: #88aacc'
         ].concat(defaultStyle).join(';');
 
-        console.log(
-            print,
-            styleTitle1,
-            styleTitle2,
-            style1,
-            style2,
-            style1,
-            style2,
-            style1,
-            style2,
-        );
+        if (_debug2) {
+            console.log(
+                print,
+                styleTitle1,
+                styleTitle2,
+                style1,
+                style2,
+                style1,
+                style2,
+                style1,
+                style2,
+            );
+        }
     }
 
     const findSmallPalindromes = {
+        1: () => {
+            definePsLength(1, 0, 0);
+            defineX(1, n);
+        },
         2: () => {
             if (n == g) {
                 const d1 = Math.floor(parseInt(g) / 2);
@@ -997,7 +1006,7 @@ findThePalindromes = (n, _debug = false) => {
             const d0 = getDigit(0);
             const d1 = getDigit(1);
             const d2 = getDigit(2);
-    
+
             if (d2 <= d0) {
                 definePsLength(3, 1, 0);
                 defineX(1, d2);
@@ -1032,30 +1041,99 @@ findThePalindromes = (n, _debug = false) => {
             }
         },
         4: () => {
+            const number = parseInt(n, g);
+            const d0 = getDigit(0);
             const d3 = getDigit(3);
-            const v = d3 * 1000 + d3;        
-            if (parseInt(n) > v) {
-                const m = 201; 
-                if (n != v + m) {
-                    const oldN = n;
-                    n = (parseInt(n) - v).toString();
-                    findSmallPalindromes[n.length]();
-
-                    const _p = p;
-                    reset();
-                    definePsLength(4, _p[1].length, _p[2].length);
-
-                    n = oldN;
-                    p[1] = v.toString().split('');
-                    p[2] = _p[1];
-                    p[3] = _p[2];
+            const d300d3 = parseInt(`${d3}00${d3}`, g);
+            const preDiff = parseInt(n, g) - d300d3;
+            const diff = preDiff < 0 ? '0' : preDiff.toString(g);
+            const d = parseInt(diff[diff.length - 1], g);
+            
+            const validateM = () => {
+                if (diff == 201) {
+                    return true;
                 }
+                const calc = (d + 1).toString(g) + d.toString();
+                return calc == diff && d >= 1 && calc.length == 2;
+            }
+
+
+            if (number >= d300d3 && !validateM()) {
+                const oldN = n;
+                n = preDiff.toString(g);
+                
+                findSmallPalindromes[n.length]();
+
+                const _p = p;
+                reset();
+                definePsLength(4, _p[1].length, _p[2].length);
+
+                n = oldN;
+                p[1] = d300d3.toString(g).split('');
+                p[2] = _p[1];
+                p[3] = _p[2];
+
+            } else if (diff == 201) {
+                if (d3 != 1 && d3 != g - 1) {
+                    definePsLength(4, 3, 0);
+                    defineX(1, d3 - 1);
+                    defineX(2, g - 1);
+                    defineY(1, 2);
+                    defineY(2, 1);
+                } else if (d3 == 1) {
+                    definePsLength(4, 2, 0);
+                    defineX(1, 1);
+                    defineX(2, 1);
+                    defineY(1, g - 2);
+                    defineZ(1, 3);
+                } else {
+                    definePsLength(4, 2, 0);
+                    defineX(1, g - 1);
+                    defineX(2, 1);
+                    defineY(1, g - 2);
+                    defineZ(1, 3);
+                }
+            } else if (d >= 1 && d <= g - 2) {
+                if (D(d3 + d) == d0) {         
+                    if (d3 != 1) {
+                        definePsLength(4, 3, 2);
+                        defineX(1, d3 - 1);
+                        defineX(2, g - 2);
+                        defineY(1, 1);
+                        defineY(2, 3);
+                        defineZ(1, d);
+                    } else {
+                        definePsLength(3, 2, 1);
+                        defineX(1, g - 1);
+                        defineX(2, g - 1);
+                        defineY(1, d + 1);
+                        defineZ(1, 1);
+                    }
+                } else if (D(d3 + d) == D(g + d0) && d0 >= g - 1) {
+                    definePsLength(4, 3, 2);
+                    defineX(1, d3 - 1);
+                    defineX(2, g - 2);
+                    defineY(1, 1);
+                    defineY(2, 3);
+                    defineZ(1, d);
+                }
+            } else if (!getDigit(1) && !getDigit(2) && d0 <= d3 - 1 && d3 != 1) {
+                definePsLength(4, 1, 1);
+                defineX(1, d3 - 1);
+                defineX(2, g - 1);
+                defineY(1, g + d0 - d3);
+                defineZ(1, 1);
+            } else if (number == 1000) {
+                definePsLength(3, 1, 0);
+                defineX(1, g - 1);
+                defineX(2, g - 1);
+                defineY(1, 1);
             }
         }
     };
 
     var smallDigits = true;
-    if(l && l < 7) {
+    if (l && l < 7) {
         findSmallPalindromes[l]();
     }
 
