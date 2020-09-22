@@ -459,9 +459,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
         const algs = {
             1: () => {
                 const { x: x1, y: y1, z: z1 } = getXYZ(1);
-
                 c[1] = Math.floor((x1 + y1 + z1) / g);
-
                 const x2 = z1 <= getDigit(2 * m - 2) - 1 ? D(getDigit(2 * m - 1) - y1) : D(getDigit(2 * m - 1) - y1 - 1);
                 const y2 = D(getDigit(2 * m - 2) - z1 - 1);
                 const z2 = D(getDigit(1) - x2 - y2 - c[1]);
@@ -474,7 +472,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                     const xi = zim1 <= getDigit(2 * m - i) - 1 ? 1 : 0;
                     const yi = D(getDigit(2 * m - i) - zim1 - 1);
                     const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
-                    c[i] = Math.floor((xi + yi + zi + c[i - 1]) / g);
+                    c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
                     defineXYZ(i, xi, yi, zi);
                 }
 
@@ -892,88 +890,12 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
         ajustmentUsed = undefined;
     }
 
-    debug = () => {
-
-        const pPreRender = (index) => {
-            p[index].reverse();
-            for (let i = p[index].length; i < l; i++) {
-                p[index].push(' ');
-            }
-            p[index].reverse();
+    const validateM = (_diff, _d) => {
+        if (_diff == 201) {
+            return false;
         }
-
-        const p1 = p[1].join('');
-        const p2 = p[2].join('');
-        const p3 = p[3].join('');
-
-        const psPlusValue = calcStr.add(calcStr.add(p1, p2), p3);
-
-        if (n != psPlusValue) {
-            console.log(n);
-        }
-        console.log(n == psPlusValue);
-
-        pPreRender(1);
-        pPreRender(2);
-        pPreRender(3);
-
-        const render = (arr) => {
-            let print = '%c';
-            for (let i = 1; i <= arr.length; i++) {
-                let pc = "";
-                let y = algToUse == 4 ? m + 1 : m;
-                if ((i == y && !(l / 2 % 2)) || (i == y + 1 && l / 2 % 2)) {
-                    pc = '%c';
-                }
-
-                print += `${pc} ${arr[i - 1]} `;
-            }
-            return print + '\n';
-        }
-
-        let print = "";
-
-        print += render(n.split(''));
-        print += render(p[1]);
-        print += render(p[2]);
-        print += render(p[3]);
-
-        const defaultStyle = [
-            'color: #fff',
-            'font-size: 16px',
-            'padding: 10px 0',
-            'line-height: 35px'
-        ];
-
-        const styleTitle1 = [
-            'background: #191919'
-        ].concat(defaultStyle).join(';');
-
-        const styleTitle2 = [
-            'background: #6f81a1'
-        ].concat(defaultStyle).join(';');
-
-        const style1 = [
-            'background: #000'
-        ].concat(defaultStyle).join(';');
-
-        const style2 = [
-            'background: #88aacc'
-        ].concat(defaultStyle).join(';');
-
-        if (_debug2) {
-            console.log(
-                print,
-                styleTitle1,
-                styleTitle2,
-                style1,
-                style2,
-                style1,
-                style2,
-                style1,
-                style2,
-            );
-        }
+        const calc = (_d + 1).toString(g) + _d.toString();
+        return !(calc == _diff && _d >= 1 && calc.length == 2);
     }
 
     const findSmallPalindromes = {
@@ -1044,24 +966,15 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
             const number = parseInt(n, g);
             const d0 = getDigit(0);
             const d3 = getDigit(3);
-            const d300d3 = parseInt(`${d3}00${d3}`, g);
-            const preDiff = parseInt(n, g) - d300d3;
+            const diffN = parseInt(`${d3}00${d3}`, g);
+            const preDiff = parseInt(n, g) - diffN;
             const diff = preDiff < 0 ? '0' : preDiff.toString(g);
             const d = parseInt(diff[diff.length - 1], g);
-            
-            const validateM = () => {
-                if (diff == 201) {
-                    return true;
-                }
-                const calc = (d + 1).toString(g) + d.toString();
-                return calc == diff && d >= 1 && calc.length == 2;
-            }
 
-
-            if (number >= d300d3 && !validateM()) {
+            if (number >= diffN && validateM(diff, d)) {
                 const oldN = n;
                 n = preDiff.toString(g);
-                
+
                 findSmallPalindromes[n.length]();
 
                 const _p = p;
@@ -1069,7 +982,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                 definePsLength(4, _p[1].length, _p[2].length);
 
                 n = oldN;
-                p[1] = d300d3.toString(g).split('');
+                p[1] = diffN.toString(g).split('');
                 p[2] = _p[1];
                 p[3] = _p[2];
 
@@ -1094,7 +1007,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                     defineZ(1, 3);
                 }
             } else if (d >= 1 && d <= g - 2) {
-                if (D(d3 + d) == d0) {         
+                if (D(d3 + d) == d0) {
                     if (d3 != 1) {
                         definePsLength(4, 3, 2);
                         defineX(1, d3 - 1);
@@ -1129,13 +1042,203 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                 defineX(2, g - 1);
                 defineY(1, 1);
             }
+        },
+        5: () => {
+            if (getDigit(4) != 1) {
+                defineFirstDigits();
+                runAlg();
+            } else {
+                const number = parseInt(n, g);
+                const d3 = getDigit(3);
+                const diffN = parseInt(`1${d3}0${d3}1`, g);
+                const preDiff = parseInt(n, g) - diffN;
+                const diff = preDiff < 0 ? '0' : preDiff.toString(g);
+                const d = parseInt(diff[diff.length - 1], g);
+
+                if (number >= diffN && validateM(diff, d)) {
+                    const oldN = n;
+                    n = preDiff.toString(g);
+
+                    findSmallPalindromes[n.length]();
+
+                    const _p = p;
+                    reset();
+                    definePsLength(4, _p[1].length, _p[2].length);
+
+                    n = oldN;
+                    p[1] = diffN.toString(g).split('');
+                    p[2] = _p[1];
+                    p[3] = _p[2];
+                } else if (diff == 201) {
+                    definePsLength(5, 3, 0);
+                    defineX(1, 1);
+                    defineX(2, d3);
+                    defineX(3, 1);
+                    defineY(1, 1);
+                    defineY(2, 0);
+                } else if (d >= 1 && d <= g - 2) {
+                    if (d3) {
+                        if (d + 1 + d3 <= g - 1) {
+                            definePsLength(5, 3, 1);
+                            defineX(1, 1);
+                            defineX(2, d3 - 1);
+                            defineX(3, 1);
+                            defineY(1, g - 1);
+                            defineY(2, d + 1);
+                            defineZ(1, d + 1);
+                        } else {
+                            definePsLength(5, 3, 1);
+                            defineX(1, 1);
+                            defineX(2, d3 - 1);
+                            defineX(3, 1);
+                            defineY(1, g - 1);
+                            defineY(2, d + 1);
+                            defineZ(1, d + 1);
+                        }
+                    } else {
+                        definePsLength(4, 2, 1);
+                        defineX(1, g - 1);
+                        defineX(2, g - 1);
+                        defineY(1, d + 1);
+                        defineY(2, d + 1);
+                        defineZ(1, 1);
+                    }
+                } else if (n <= diffN - 1) {
+                    if (!d3) {
+                        definePsLength(4, 1, 0);
+                        defineX(1, g - 1);
+                        defineX(2, g - 1);
+                        defineY(1, 1);
+                    } else {
+                        const diffN2 = parseInt(`1${d3 - 1}${g - 1}${d3 - 1}1`, g);
+                        const preDiff2 = parseInt(n, g) - diffN2;
+                        const diff2 = preDiff2 < 0 ? '0' : preDiff2.toString(g);
+                        const d2 = parseInt(diff2[diff2.length - 1], g);
+
+                        if (n == diffN2 + preDiff2 && validateM(diff2, d2)) {
+                            const oldN = n;
+                            n = preDiff2.toString(g);
+
+                            findSmallPalindromes[n.length]();
+
+                            const _p = p;
+                            reset();
+                            definePsLength(4, _p[1].length, _p[2].length);
+
+                            n = oldN;
+                            p[1] = diffN2.toString(g).split('');
+                            p[2] = _p[1];
+                            p[3] = _p[2];
+                        }
+                    }
+                } else {
+                    return 'asd';
+                    definePsLength(5, 3, 1);
+                    defineX(1, g - 1);
+                    defineX(2, d3 - 1);
+                    defineX(3, g - 2);
+                    defineY(1, 1);
+                    defineY(1, d + 1);
+                    defineZ(1, d - 1);
+                }
+            }
         }
     };
 
+
+    debug = () => {
+
+        const pPreRender = (index) => {
+            p[index].reverse();
+            for (let i = p[index].length; i < l; i++) {
+                p[index].push(' ');
+            }
+            p[index].reverse();
+        }
+
+        const p1 = p[1].join('');
+        const p2 = p[2].join('');
+        const p3 = p[3].join('');
+
+        const psPlusValue = calcStr.add(calcStr.add(p1, p2), p3);
+
+        if (n != psPlusValue) {
+            console.log(n);
+        }
+        
+        console.log(n == psPlusValue);
+        // return n == psPlusValue;
+
+        pPreRender(1);
+        pPreRender(2);
+        pPreRender(3);
+
+        const render = (arr) => {
+            let print = '%c';
+            for (let i = 1; i <= arr.length; i++) {
+                let pc = "";
+                let y = algToUse == 4 ? m + 1 : m;
+                if ((i == y && !(l / 2 % 2)) || (i == y + 1 && l / 2 % 2)) {
+                    pc = '%c';
+                }
+
+                print += `${pc} ${arr[i - 1]} `;
+            }
+            return print + '\n';
+        }
+
+        let print = "";
+
+        print += render(n.split(''));
+        print += render(p[1]);
+        print += render(p[2]);
+        print += render(p[3]);
+
+        const defaultStyle = [
+            'color: #fff',
+            'font-size: 16px',
+            'padding: 10px 0',
+            'line-height: 35px'
+        ];
+
+        const styleTitle1 = [
+            'background: #191919'
+        ].concat(defaultStyle).join(';');
+
+        const styleTitle2 = [
+            'background: #6f81a1'
+        ].concat(defaultStyle).join(';');
+
+        const style1 = [
+            'background: #000'
+        ].concat(defaultStyle).join(';');
+
+        const style2 = [
+            'background: #88aacc'
+        ].concat(defaultStyle).join(';');
+
+        if (_debug2) {
+            console.log(
+                print,
+                styleTitle1,
+                styleTitle2,
+                style1,
+                style2,
+                style1,
+                style2,
+                style1,
+                style2,
+            );
+        }
+    }
+
     var smallDigits = true;
     if (l && l < 7) {
-        findSmallPalindromes[l]();
+        const a = findSmallPalindromes[l]()
+        // if (_debug2) return debug();
+        // return a;
     }
+
 
     if (l >= 7) {
         smallDigits = false;
