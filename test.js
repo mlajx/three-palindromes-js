@@ -1,16 +1,16 @@
 require('./script');
-// var fs = require('fs');
+var fs = require('fs');
 
-// for(let i = 1000000; i <= 10000000; i++) {
+// for(let i = 200000; i <= 1000000; i++) {
 //     const result = findThePalindromes(i.toString());
-//     fs.appendFileSync('result.txt', `${i} \t ${result.typeUsed} \t ${result.algToUse} \t ${result.ajustmentUsed} \n`, () => {});
+//     fs.appendFileSync('result2.txt', `${i} \t ${result.typeUsed} \t ${result.algToUse} \t ${result.ajustmentUsed} \n`, () => {});
 // }
 
-findThePalindromes('42002');
+findThePalindromes('19079');
 
 let errors = [];
-for(let i = 10000; i < 100000; i++) {
-    if(!findThePalindromes(i.toString(), true)) {
+for(let i = 100000; i < 200000; i++) {
+    if(!findThePalindromes(i.toString(), true, true, true)) {
         errors.push(i)
     }
     // if(findThePalindromes(i.toString(), true, false) == 'asd') {

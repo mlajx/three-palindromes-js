@@ -1,4 +1,3 @@
-
 /** Maybe those is unnecessary cases
  *  II.3
  */
@@ -7,7 +6,7 @@
  * important commands
  * grep ' ajustmentUsed ' result.txt | tail
  */
-findThePalindromes = (n, _debug = false, _debug2 = true) => {
+findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
 
     const l = n.length;
     let g = 10;
@@ -489,9 +488,14 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
 
                 if (c[m] == 2) {
                     ajustmentUsed = "I.3";
-                    defineX(m + 1, 1);
-                    defineY(m, getY(m) - 1);
-                    defineZ(m, 0);
+                    if(getZ(m) != g - 1) {
+                        defineY(m, getY(m) - 1);
+                        defineZ(m, getZ(m) + 1);
+                    } else {
+                        defineX(m + 1, 1);
+                        defineY(m, getY(m) - 1);
+                        defineZ(m, 0);
+                    }
                 }
             },
             2: () => {
@@ -894,6 +898,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
         if (_diff == 201) {
             return false;
         }
+        
         const calc = (_d + 1).toString(g) + _d.toString();
         return !(calc == _diff && _d >= 1 && calc.length == 2);
     }
@@ -1114,8 +1119,8 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                         const preDiff2 = parseInt(n, g) - diffN2;
                         const diff2 = preDiff2 < 0 ? '0' : preDiff2.toString(g);
                         const d2 = parseInt(diff2[diff2.length - 1], g);
-
-                        if (n == diffN2 + preDiff2 && validateM(diff2, d2)) {
+                        
+                        if (validateM(diff2, d2)) {
                             const oldN = n;
                             n = preDiff2.toString(g);
 
@@ -1129,18 +1134,25 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
                             p[1] = diffN2.toString(g).split('');
                             p[2] = _p[1];
                             p[3] = _p[2];
+                        } else {
+                            definePsLength(5, 3, 1);
+                            defineX(1, 1);
+                            defineX(2, d3 - 1);
+                            defineX(3, g - 2);
+                            defineY(1, 1);
+                            defineY(2, d2 + 1);
+                            defineZ(1, d2 - 1);
                         }
                     }
-                } else {
-                    return 'asd';
-                    definePsLength(5, 3, 1);
-                    defineX(1, g - 1);
-                    defineX(2, d3 - 1);
-                    defineX(3, g - 2);
-                    defineY(1, 1);
-                    defineY(1, d + 1);
-                    defineZ(1, d - 1);
                 }
+            }
+        },
+        6: () => {
+            if (getDigit(5) != 1) {
+                defineFirstDigits();
+                runAlg();
+            } else {
+                
             }
         }
     };
@@ -1166,8 +1178,10 @@ findThePalindromes = (n, _debug = false, _debug2 = true) => {
             console.log(n);
         }
         
+        if(_debug3) {
+            return n == psPlusValue;
+        }
         console.log(n == psPlusValue);
-        // return n == psPlusValue;
 
         pPreRender(1);
         pPreRender(2);
