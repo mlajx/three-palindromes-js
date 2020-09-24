@@ -2,15 +2,14 @@
  *  II.3
  */
 
-/***
- * important commands
- * grep ' ajustmentUsed ' result.txt | tail
- */
-findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
+findThePalindromes = (n, g = 10, options = {}) => {
 
-    const l = n.length;
-    let g = 10;
-    const m = Math.floor(l / 2);
+
+
+    options = { ...{ debug: false, outputAlwaysBase10: true }, ...options, };
+
+    let l = n.length;
+    let m = Math.floor(l / 2);
     let p = {
         1: [],
         2: [],
@@ -19,7 +18,11 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
 
     const getDigit = (index) => {
         const reverseNumber = n.split('').reverse();
-        return parseInt(reverseNumber[index]);
+        return parseInt(reverseNumber[index], g);
+    }
+
+    const C = (n) => {
+        return Math.floor(n / g);
     }
 
     const D = (n) => {
@@ -458,11 +461,11 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
         const algs = {
             1: () => {
                 const { x: x1, y: y1, z: z1 } = getXYZ(1);
-                c[1] = Math.floor((x1 + y1 + z1) / g);
+                c[1] = C(x1 + y1 + z1);
                 const x2 = z1 <= getDigit(2 * m - 2) - 1 ? D(getDigit(2 * m - 1) - y1) : D(getDigit(2 * m - 1) - y1 - 1);
                 const y2 = D(getDigit(2 * m - 2) - z1 - 1);
                 const z2 = D(getDigit(1) - x2 - y2 - c[1]);
-                c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
+                c[2] = C(x2 + y2 + z2 + c[1] - getDigit(1));
 
                 defineXYZ(2, x2, y2, z2);
 
@@ -471,7 +474,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                     const xi = zim1 <= getDigit(2 * m - i) - 1 ? 1 : 0;
                     const yi = D(getDigit(2 * m - i) - zim1 - 1);
                     const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
-                    c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    c[i] = C(xi + yi + zi + c[i - 1] - getDigit(i - 1));
                     defineXYZ(i, xi, yi, zi);
                 }
 
@@ -488,7 +491,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
 
                 if (c[m] == 2) {
                     ajustmentUsed = "I.3";
-                    if(getZ(m) != g - 1) {
+                    if (getZ(m) != g - 1) {
                         defineY(m, getY(m) - 1);
                         defineZ(m, getZ(m) + 1);
                     } else {
@@ -500,13 +503,13 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             },
             2: () => {
                 const { x: x1, y: y1, z: z1 } = getXYZ(1);
-                c[1] = Math.floor((x1 + y1 + z1) / g);
+                c[1] = C(x1 + y1 + z1);
 
                 const x2 = z1 <= getDigit(2 * m - 3) - 1 ? D(getDigit(2 * m - 2) - y1) : D(getDigit(2 * m - 2) - y1 - 1);
                 const y2 = D(getDigit(2 * m - 3) - z1 - 1);
                 const z2 = D(getDigit(1) - x2 - y2 - c[1]);
 
-                c[2] = Math.floor((x2 + y2 + z2 + c[1] - getDigit(1)) / g);
+                c[2] = C(x2 + y2 + z2 + c[1] - getDigit(1));
 
                 defineXYZ(2, x2, y2, z2);
 
@@ -515,14 +518,14 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                     const xi = zim1 <= getDigit(2 * m - i - 1) - 1 ? 1 : 0;
                     const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
                     const zi = D(getDigit(i - 1) - xi - yi - c[i - 1]);
-                    c[i] = Math.floor((xi + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    c[i] = C(xi + yi + zi + c[i - 1] - getDigit(i - 1));
                     defineXYZ(i, xi, yi, zi);
                 }
 
                 defineX(m, 0);
                 defineY(m, D(getDigit(m - 1) - getZ(m - 1) - c[m - 1]));
 
-                c[m] = Math.floor((getX(m) + getY(m) + getZ(m) + c[m - 1] - getDigit(m - 1)) / g);
+                c[m] = C(getX(m) + getY(m) + getZ(m) + c[m - 1] - getDigit(m - 1));
 
                 if (c[m] == 1) {
                     ajustmentUsed = "II.1";
@@ -551,7 +554,6 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                             defineX(m - 1, getX(m - 1) - 1);
                             defineY(m, g - 4);
                             defineY(m - 1, g - 1);
-                            defineZ(m + 2, 0);
                             defineZ(m, 2);
                         }
                     }
@@ -568,13 +570,13 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             },
             3: () => {
                 const { x: x1, y: y1, z: z1 } = getXYZ(1);
-                c[1] = Math.floor((1 + y1 + z1) / g);
+                c[1] = C(1 + y1 + z1);
 
                 const x2 = z1 <= getDigit(2 * m - 3) - 1 ? D(getDigit(2 * m - 2) - y1) : D(getDigit(2 * m - 2) - y1 - 1);
                 const y2 = D(getDigit(2 * m - 3) - z1 - 1);
                 const z2 = D(getDigit(1) - x1 - y2 - c[1]);
 
-                c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+                c[2] = C(x1 + y2 + z2 + c[1] - getDigit(1));
 
                 defineXYZ(2, x2, y2, z2);
 
@@ -583,14 +585,14 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                     const xi = zim1 <= getDigit(2 * m - i - 1) - 1 ? 1 : 0;
                     const yi = D(getDigit(2 * m - i - 1) - zim1 - 1);
                     const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
-                    c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    c[i] = C(getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1));
                     defineXYZ(i, xi, yi, zi);
                 }
 
                 defineX(m, 0);
                 defineY(m, D(getDigit(m - 1) - getZ(m - 1) - getX(m - 1) - c[m - 1]));
 
-                c[m] = Math.floor((getX(m - 1) + getY(m) + getZ(m) + c[m - 1] - getDigit(m - 1)) / g);
+                c[m] = C(getX(m - 1) + getY(m) + getZ(m) + c[m - 1] - getDigit(m - 1));
 
                 if (c[m] == 1) {
                     ajustmentUsed = "III.1";
@@ -598,6 +600,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
 
                 if (!c[m]) {
                     ajustmentUsed = "III.2";
+                    defineX(m, 1);
                 }
 
                 if (c[m] == 2) {
@@ -629,13 +632,13 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             4: () => {
                 const { x: x1, y: y1, z: z1 } = getXYZ(1);
 
-                c[1] = Math.floor((1 + y1 + z1) / g);
+                c[1] = C(1 + y1 + z1);
 
                 const x2 = z1 <= getDigit(2 * m - 4) - 1 ? D(getDigit(2 * m - 3) - y1) : D(getDigit(2 * m - 3) - y1 - 1);
                 const y2 = D(getDigit(2 * m - 4) - z1 - 1);
                 const z2 = D(getDigit(1) - x1 - y2 - c[1]);
 
-                c[2] = Math.floor((x1 + y2 + z2 + c[1] - getDigit(1)) / g);
+                c[2] = C(x1 + y2 + z2 + c[1] - getDigit(1));
 
                 defineXYZ(2, x2, y2, z2);
 
@@ -644,7 +647,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                     const xi = zim1 <= getDigit(2 * m - i - 2) - 1 ? 1 : 0;
                     const yi = D(getDigit(2 * m - i - 2) - zim1 - 1);
                     const zi = D(getDigit(i - 1) - getX(i - 1) - yi - c[i - 1]);
-                    c[i] = Math.floor((getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1)) / g);
+                    c[i] = C(getX(i - 1) + yi + zi + c[i - 1] - getDigit(i - 1));
                     defineXYZ(i, xi, yi, zi);
                 }
 
@@ -659,7 +662,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                 defineY(m - 1, D(getDigit(m - 1) - getZ(m - 2) - 1));
                 defineZ(m - 1, D(getDigit(m - 2) - getX(m - 2) - getY(m - 1) - c[m - 2]));
 
-                c[m - 1] = Math.floor((getX(m - 2) + getY(m - 1) + getZ(m - 1) + c[m - 2] - getDigit(m - 2)) / g);
+                c[m - 1] = C(getX(m - 2) + getY(m - 1) + getZ(m - 1) + c[m - 2] - getDigit(m - 2));
 
                 if ((getX(m - 1) + c[m - 1]) == 1) {
                     ajustmentUsed = "IV.1";
@@ -868,12 +871,24 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             },
             5: () => {
                 alg5 = true;
-                reset();
-                const s = calcStr.add(calcStr.pow(g, m), calcStr.pow(g, m - 1));
+                const s = calcStr.add(calcStr.pow((g).toString(g), (m).toString(g)), calcStr.pow((g).toString(g), (m - 1).toString(g)));
+
                 n = calcStr.sub(n, s);
+                l = n.length;
+                m = Math.floor(l / 2);
+
+                reset();
                 defineFirstDigits();
                 runAlg();
+
+                for (let i = 0; i < p[1].length; i++) {
+                    p[1][i] = p[1][i].toString(g);
+                }
+
+
                 n = calcStr.add(n, s);
+                l = n.length;
+                m = Math.floor(l / 2);
                 p[1] = calcStr.add(p[1].join(''), s).split('');
             }
         }
@@ -898,8 +913,8 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
         if (_diff == 201) {
             return false;
         }
-        
-        const calc = (_d + 1).toString(g) + _d.toString();
+
+        const calc = (_d + 1).toString(g) + _d.toString(g);
         return !(calc == _diff && _d >= 1 && calc.length == 2);
     }
 
@@ -909,7 +924,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             defineX(1, n);
         },
         2: () => {
-            if (n == g) {
+            if (n == g.toString(g)) {
                 const d1 = Math.floor(parseInt(g) / 2);
                 definePsLength(1, 1, 0);
                 defineX(1, d1);
@@ -971,7 +986,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             const number = parseInt(n, g);
             const d0 = getDigit(0);
             const d3 = getDigit(3);
-            const diffN = parseInt(`${d3}00${d3}`, g);
+            const diffN = parseInt(`${d3.toString(g)}00${d3.toString(g)}`, g);
             const preDiff = parseInt(n, g) - diffN;
             const diff = preDiff < 0 ? '0' : preDiff.toString(g);
             const d = parseInt(diff[diff.length - 1], g);
@@ -1055,7 +1070,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             } else {
                 const number = parseInt(n, g);
                 const d3 = getDigit(3);
-                const diffN = parseInt(`1${d3}0${d3}1`, g);
+                const diffN = parseInt(`1${d3.toString(g)}0${d3.toString(g)}1`, g);
                 const preDiff = parseInt(n, g) - diffN;
                 const diff = preDiff < 0 ? '0' : preDiff.toString(g);
                 const d = parseInt(diff[diff.length - 1], g);
@@ -1108,18 +1123,18 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                         defineY(2, d + 1);
                         defineZ(1, 1);
                     }
-                } else if (n <= diffN - 1) {
+                } else if (number <= diffN - 1) {
                     if (!d3) {
                         definePsLength(4, 1, 0);
                         defineX(1, g - 1);
                         defineX(2, g - 1);
                         defineY(1, 1);
                     } else {
-                        const diffN2 = parseInt(`1${d3 - 1}${g - 1}${d3 - 1}1`, g);
+                        const diffN2 = parseInt(`1${(d3 - 1).toString(g)}${(g - 1).toString(g)}${(d3 - 1).toString(g)}1`, g);
                         const preDiff2 = parseInt(n, g) - diffN2;
                         const diff2 = preDiff2 < 0 ? '0' : preDiff2.toString(g);
                         const d2 = parseInt(diff2[diff2.length - 1], g);
-                        
+
                         if (validateM(diff2, d2)) {
                             const oldN = n;
                             n = preDiff2.toString(g);
@@ -1148,17 +1163,463 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             }
         },
         6: () => {
-            if (getDigit(5) != 1) {
+            const d0 = getDigit(0);
+            const d1 = getDigit(1);
+            const d2 = getDigit(2);
+            const d3 = getDigit(3);
+            const d4 = getDigit(4);
+            const d5 = getDigit(5);
+
+            if (d5 != 1) {
                 defineFirstDigits();
                 runAlg();
             } else {
-                
+                if (D(d0 - d4 + 1) && D(d0 - d4 + 2)) {
+                    const x1 = Math.floor((g + d4 - 1) / 2);
+                    const y1 = g + d4 - 1 - x1;
+                    const z1 = D(d0 - d4 + 1);
+                    const c1 = C(x1 + y1 + z1 - d0);
+
+                    const x2 = Math.floor((g + d3 - 1) / 2);
+                    const y2 = g + d3 - 1 - x2;
+                    const z2 = D(d1 - x2 - y2 - c1);
+                    const c2 = C(x2 + y2 + z2 + c1 - d1);
+
+                    const x3 = Math.floor((g + d2 - c2 - z1) / 2);
+                    const y3 = g + d2 - c2 - z1 - x3;
+
+                    definePsLength(5, 5, 3);
+                    defineX(1, x1);
+                    defineX(2, x2);
+                    defineX(3, x3);
+                    defineY(1, y1);
+                    defineY(2, y2);
+                    defineY(3, y3);
+                    defineZ(1, z1);
+                    defineZ(2, z2);
+
+                } else if (!D(d0 - d4 + 2)) {
+                    if (d2) {
+                        const x1 = Math.floor((g + d4 - 1) / 2);
+                        const y1 = g + d4 - 1 - x1;
+                        const z1 = g - 1;
+                        const c1 = C(x1 + y1 + z1 - d0);
+
+                        const x2 = Math.floor((g + d3 - 1) / 2);
+                        const y2 = g + d3 - 1 - x2;
+                        const z2 = D(d1 - x2 - y2 - c1);
+                        const c2 = C(x2 + y2 + z2 + c1 - d1);
+
+                        const x3 = Math.floor(g + d2 - c2 - z1);
+                        const y3 = g + d2 - c2 - z1 - x3;
+
+                        definePsLength(5, 5, 3);
+                        defineX(1, x1);
+                        defineX(2, x2);
+                        defineX(3, x3);
+                        defineY(1, y1);
+                        defineY(2, y2);
+                        defineY(3, y3);
+                        defineZ(1, z1);
+                        defineZ(2, z2);
+                    } else {
+                        if (d4 <= 1) {
+                            const x1 = !d4 ? g - 2 : g - 1;
+                            const y1 = 1;
+                            const z1 = g - 1;
+                            const c1 = C(x1 + y1 + z1 - d0);
+
+                            const x2 = Math.floor(d3 / 2);
+                            const y2 = d3 - x2;
+                            const z2 = D(d1 - x2 - y2 - 1);
+                            const c2 = C(x2 + y2 + z2 + c1 - d1);
+
+                            const x3 = Math.floor((g - c2 - z2) / 2);
+                            const y3 = g - c2 - z2 - x3;
+
+                            definePsLength(5, 5, 4);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        } else if (d4 == 2) {
+                            const x1 = g - 1;
+                            const y1 = 2;
+                            const z1 = g - 1;
+                            const c1 = C(x1 + y1 + z1 - d0);
+
+                            const x2 = Math.floor(d3 / 2);
+                            const y2 = d3 - x2;
+                            const z2 = D(d1 - x2 - y2 - 2);
+                            const c2 = C(x2 + y2 + z2 + c1 - d1);
+
+                            const x3 = Math.floor((g - c2 - z2) / 2);
+                            const y3 = g - c2 - z2 - x3;
+
+                            if (c2 != 2) {
+                                definePsLength(5, 5, 4);
+                                defineX(1, x1);
+                                defineX(2, x2);
+                                defineX(3, x3);
+                                defineY(1, y1);
+                                defineY(2, y2);
+                                defineY(3, y3);
+                                defineZ(1, z1);
+                                defineZ(2, z2);
+                            } else {
+                                definePsLength(6, 3, 1);
+                                defineX(1, 1);
+                                defineX(2, 2);
+                                defineX(3, g - 2);
+                                defineY(1, 1);
+                                defineY(2, g - 3);
+                                defineZ(1, g - 2);
+                            }
+                        } else {
+                            const x1 = 1;
+                            const y1 = d4 - 1;
+                            const z1 = g - 2;
+
+                            const c4 = C(D(d3 - 1) + 1 - d3);
+
+                            const x2 = 1 - c4;
+                            const y2 = D(d3 - 1);
+                            const z2 = D(d1 - d3 - 1 + c4);
+
+                            const c2 = C(2 - c4 + D(d3 - 1) + z2 - d1);
+
+                            const x3 = 0;
+                            const y3 = 2 - c2;
+
+                            definePsLength(6, 5, 3);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        }
+                    }
+                } else if (!D(d0 - d4 + 1)) {
+                    if (d3) {
+                        if (d4 != g - 1) {
+                            const x1 = Math.floor((g + d4) / 2);
+                            const y1 = g + d4 - x1;
+                            const z1 = g - 1;
+                            const c1 = C(x1 + y1 + z1 - d0);
+
+                            const x2 = Math.floor((d3 - 1) / 2);
+                            const y2 = d3 - 1 - x2;
+                            const z2 = D(d1 - x2 - y2 - c1);
+                            const c2 = C(x2 + y2 + z2 + c1 - d1);
+
+                            const x3 = Math.floor((g + d2 - c2 - z1) / 2);
+                            const y3 = g + d2 - c2 - z1 - x3;
+
+                            definePsLength(5, 5, 3);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        } else {
+                            const x1 = 1;
+                            const y1 = g - 4;
+                            const z1 = 1;
+
+                            const y = D(d1 - 3 - 1) == g - 1 ? 3 : D(d1 - 3 - 1) == g - 2 ? 2 : 1;
+                            const x = d3 < y ? d3 + g - y : d3 - y;
+                            let u = 0;
+
+                            const c1 = C(3 + y + D(d1 - 3 - y) - d1);
+                            let c2 = C(x + D(d2 - x - 1 - c1 - u) + c1 + 1 - d2);
+
+                            if (c2 > 1) {
+                                c2 = 1;
+                                u = 1;
+                            }
+
+                            const c3 = C(x + (y - c2) + c2 - d3);
+
+                            const x2 = 3 - c3;
+                            const y2 = y - c2 + u;
+                            const z2 = D(d1 - 3 - y) + (c2 - u) + c3;
+
+                            const x3 = x - u;
+                            const y3 = D(d2 - x - 1 - c1 + u);
+
+                            definePsLength(6, 5, 3);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        }
+                    } else {
+                        if (!d4) {
+                            if (d2) {
+                                const number = parseInt(n, g);
+                                const diffN = parseInt(100001, g);
+                                const oldN = n;
+                                n = (number - diffN).toString(g);
+                                findSmallPalindromes[n.length]();
+
+                                const _p = p;
+                                reset();
+                                definePsLength(4, _p[1].length, _p[2].length);
+
+                                n = oldN;
+                                p[1] = diffN.toString(g).split('');
+                                p[2] = _p[1];
+                                p[3] = _p[2];
+                            } else if (!d2) {
+                                if (d1 && d1 != g - 1) {
+                                    const number = parseInt(n, g);
+                                    const diffN = parseInt(100001, g);
+                                    const oldN = n;
+                                    n = (number - diffN).toString(g);
+                                    findSmallPalindromes[n.length]();
+
+                                    const _p = p;
+                                    reset();
+                                    definePsLength(4, _p[1].length, _p[2].length);
+
+                                    n = oldN;
+                                    p[1] = diffN.toString(g).split('');
+                                    p[2] = _p[1];
+                                    p[3] = _p[2];
+                                } else if (!d1) {
+                                    definePsLength(6, 1, 0);
+                                    defineX(1, 1);
+                                    defineX(2, 0);
+                                    defineX(3, 0);
+                                    defineY(1, g - 2);
+                                } else if (d1 == g - 1) {
+                                    definePsLength(5, 4, 3);
+                                    defineX(1, g - 1);
+                                    defineX(2, 0);
+                                    defineX(3, 1);
+                                    defineY(1, g - 1);
+                                    defineY(2, g - 2);
+                                    defineZ(1, 1);
+                                    defineZ(2, 0);
+                                }
+                            }
+                        } else if (d4 == 1) {
+                            if (d2 >= 2 || d2 == 1 && d1 > 1) {
+                                const number = parseInt(n, g);
+                                const diffN = parseInt(110011, g);
+                                const oldN = n;
+                                n = (number - diffN).toString(g);
+                                findSmallPalindromes[n.length]();
+
+                                const _p = p;
+                                reset();
+                                definePsLength(4, _p[1].length, _p[2].length);
+
+                                n = oldN;
+                                p[1] = diffN.toString(g).split('');
+                                p[2] = _p[1];
+                                p[3] = _p[2];
+                            } else if (d2 == 1) {
+                                if (!d1) {
+                                    definePsLength(6, 3, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 0);
+                                    defineX(3, g - 1);
+                                    defineY(1, 1);
+                                    defineY(2, g - 1);
+                                    defineZ(1, g - 2);
+                                } else if (d1 == 1) {
+                                    definePsLength(6, 2, 0);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, 0);
+                                    defineY(1, g - 1);
+                                    defineY(2, g - 1);
+                                }
+                            } else if (!d2) {
+                                if (d1 > 1) {
+                                    definePsLength(6, 2, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, 0);
+                                    defineY(1, d1 - 2);
+                                    defineZ(1, g - d1 + 1);
+                                } else if (d1 == 1) {
+                                    definePsLength(6, 5, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 0);
+                                    defineX(3, 0);
+                                    defineY(1, 1);
+                                    defineY(2, 0);
+                                    defineY(3, 0);
+                                    defineZ(1, g - 2);
+                                } else if (!d1) {
+                                    definePsLength(6, 4, 0);
+                                    defineX(1, 1);
+                                    defineX(2, 0);
+                                    defineX(3, 0);
+                                    defineY(1, g - 1);
+                                    defineY(2, g - 1);
+                                }
+                            }
+                        } else if (d4 == 2) {
+                            if (d2 >= 2 || (d2 == 1 && d1 > 1)) {
+                                const number = parseInt(n, g);
+                                const diffN = parseInt(120021, g);
+                                const oldN = n;
+
+                                n = (number - diffN).toString(g);
+                                findSmallPalindromes[n.length]();
+
+                                const _p = p;
+                                reset();
+                                definePsLength(4, _p[1].length, _p[2].length);
+
+                                n = oldN;
+                                p[1] = diffN.toString(g).split('');
+                                p[2] = _p[1];
+                                p[3] = _p[2];
+                            } else if (d2 == 1) {
+                                if (!d1) {
+                                    definePsLength(6, 3, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, g - 1);
+                                    defineY(1, 1);
+                                    defineY(2, g - 2);
+                                    defineZ(1, g - 1);
+                                } else if (d1 == 1) {
+                                    definePsLength(6, 3, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, g - 1);
+                                    defineY(1, 1);
+                                    defineY(2, g - 1);
+                                    defineZ(1, g - 1);
+                                }
+                            } else if (d2 == 0) {
+                                if (d1 > 3) {
+                                    definePsLength(6, 2, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 2);
+                                    defineX(3, 0);
+                                    defineY(1, d1 - 3);
+                                    defineZ(1, g - d1 + 3);
+                                } else if (d1 == 3) {
+                                    definePsLength(6, 1, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 2);
+                                    defineX(3, 0);
+                                    defineY(1, g - 1);
+                                    defineZ(1, 1);
+                                } else if (d1 == 2) {
+                                    definePsLength(6, 3, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, g - 1);
+                                    defineY(1, 1);
+                                    defineY(2, 0);
+                                    defineZ(1, g - 1);
+                                } else if (d1 == 1) {
+                                    definePsLength(6, 5, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 0);
+                                    defineX(3, 0);
+                                    defineY(1, 2);
+                                    defineY(2, 0);
+                                    defineY(3, 0);
+                                    defineZ(1, g - 2);
+                                } else if (!d1) {
+                                    definePsLength(6, 2, 1);
+                                    defineX(1, 1);
+                                    defineX(2, 1);
+                                    defineX(3, g - 1);
+                                    defineY(1, g - 2);
+                                    defineZ(1, 2);
+                                }
+                            }
+                        } else if (d4 == 3) {
+                            const x1 = 1;
+                            const y1 = 2;
+                            const z1 = g - 1;
+
+                            const y = D(d1 - 1 - 1) == 0 ? 3 : D(d1 - 1 - 1) == g - 1 ? 2 : 1;
+
+                            const c1 = C(2 + y + D(d1 - 1 - y) - d1);
+                            const c2 = C(g - y - 1 + D(d2 + y + 2) + g - 1 - d2);
+
+                            const x2 = 0;
+                            const y2 = y - c2 + 1 + c1;
+                            const z2 = D(d1 - 1 - y) + (c2 - 1) - c1;
+
+                            const x3 = g - y - 1 - c1;
+                            const y3 = D(d2 + y + 2);
+
+                            definePsLength(6, 5, 3);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        } else if (d4 >= 4) {
+
+                            const x1 = 1;
+                            const y1 = d4 - 3;
+                            const z1 = 1;
+
+                            const y = D(d1 - 1 - 1) == 0 ? 3 : D(d1 - 1 - 1) == g - 1 ? 2 : 1;
+
+                            const c1 = C(1 + y + D(d1 - 1 - y) - d1);
+                            const c2 = C(g - y + 1 + D(d2 + y - 1) - d2);
+
+                            const x2 = 2;
+                            const y2 = y - c2 + c1;
+                            const z2 = D(d1 - 2 - y) + c2 - c1;
+
+                            const x3 = g - y - c1;
+                            const y3 = D(d2 + y - 1);
+
+                            definePsLength(6, 5, 3);
+                            defineX(1, x1);
+                            defineX(2, x2);
+                            defineX(3, x3);
+                            defineY(1, y1);
+                            defineY(2, y2);
+                            defineY(3, y3);
+                            defineZ(1, z1);
+                            defineZ(2, z2);
+                        }
+                    }
+                }
             }
         }
     };
 
 
     debug = () => {
+
+        for (let j = 1; j <= 3; j++) {
+            for (let i = 0; i < p[j].length; i++) {
+                p[j][i] = p[j][i].toString(g);
+            }
+        }
 
         const pPreRender = (index) => {
             p[index].reverse();
@@ -1172,15 +1633,9 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
         const p2 = p[2].join('');
         const p3 = p[3].join('');
 
-        const psPlusValue = calcStr.add(calcStr.add(p1, p2), p3);
+        const psPlusValue = (calcStr.add(calcStr.add(p1, p2), p3)).toUpperCase();
+        n = n.toUpperCase();
 
-        if (n != psPlusValue) {
-            console.log(n);
-        }
-        
-        if(_debug3) {
-            return n == psPlusValue;
-        }
         console.log(n == psPlusValue);
 
         pPreRender(1);
@@ -1196,7 +1651,7 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
                     pc = '%c';
                 }
 
-                print += `${pc} ${arr[i - 1]} `;
+                print += `${pc} ${arr[i - 1].toString(g).toUpperCase()} `;
             }
             return print + '\n';
         }
@@ -1231,26 +1686,22 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
             'background: #88aacc'
         ].concat(defaultStyle).join(';');
 
-        if (_debug2) {
-            console.log(
-                print,
-                styleTitle1,
-                styleTitle2,
-                style1,
-                style2,
-                style1,
-                style2,
-                style1,
-                style2,
-            );
-        }
+        console.log(
+            print,
+            styleTitle1,
+            styleTitle2,
+            style1,
+            style2,
+            style1,
+            style2,
+            style1,
+            style2,
+        );
     }
 
     var smallDigits = true;
-    if (l && l < 7) {
-        const a = findSmallPalindromes[l]()
-        // if (_debug2) return debug();
-        // return a;
+    if (l && l < 7 && findSmallPalindromes[l]) {
+        findSmallPalindromes[l]()
     }
 
 
@@ -1260,14 +1711,46 @@ findThePalindromes = (n, _debug = false, _debug2 = true, _debug3 = false) => {
         runAlg();
     }
 
-    if (_debug) debug();
+    if (options.debug) debug();
+
+    for (let j = 1; j <= 3; j++) {
+        p[j] = p[j].filter(function (el) {
+            return el != ' ';
+        });
+        if (options.outputAlwaysBase10) {
+            p[j] = p[j].map(function (el) {
+                return parseInt(el, g).toString(10);
+            })
+        }
+    }
 
     return {
-        smallDigits,
-        typeUsed,
-        algToUse,
-        ajustmentUsed,
-        alg5,
-        p
+        p1: p[1],
+        p2: p[2],
+        p3: p[3],
+        P: (index) => {
+            if(p[index]) {
+                return p[index];
+            }
+        },
+        PBase10: (index) => {
+            return parseInt(p[index].join(''), 10).toString();
+        },
+        getInformations: () => {
+            return {
+                smallDigits,
+                typeUsed,
+                algToUse,
+                ajustmentUsed,
+                alg5
+            }
+        }
+        // smallDigits,
+        // typeUsed,
+        // algToUse,
+        // ajustmentUsed,
+        // alg5,
+        // p,
+        // getP1
     }
 }
